@@ -60,13 +60,12 @@ CREATE TABLE EventTable (
 
 CREATE TABLE Show (
 	venueAddress	VARCHAR(50),
-	showDate		DATE,
-	showTime		CHAR(5),
+	showDateTime	TIMESTAMP,
 	showName		VARCHAR(30),
 	bandName		VARCHAR(30)	NOT NULL,
 	eventName		VARCHAR(30),
 	eventDate		DATE,
-	PRIMARY KEY (venueAddress, showDate, showTime),
+	PRIMARY KEY (venueAddress, showDateTime),
 	FOREIGN KEY (venueAddress) REFERENCES Venue(venueAddress)
 		ON DELETE CASCADE,
 	FOREIGN KEY (bandName) REFERENCES Band(bandName)
@@ -118,15 +117,16 @@ CREATE TABLE ConcertGoer (
 );
 
 CREATE TABLE TicketID (
-	ticketID		INTEGER	PRIMARY KEY,
-	seatNum			VARCHAR(30)	NOT NULL,
+	ticketID		INTEGER			PRIMARY KEY,
+	seatNum			VARCHAR(30)		NOT NULL,
 	userID			VARCHAR(30),
-	venueAddress	VARCHAR(50)	NOT NULL,
-	showDate		DATE		NOT NULL,
-	showTime		CHAR(5)	NOT NULL,
+	venueAddress	VARCHAR(50)		NOT NULL,
+	showDateTime		TIMESTAMP		NOT NULL,
 	FOREIGN KEY (userID) REFERENCES ConcertGoer(userID)
 		ON DELETE SET NULL,
-	UNIQUE (seatNum, venueAddress, showDate, showTime)
+	FOREIGN KEY (venueAddress, showDateTime) REFERENCES Show(venueAddress, showDateTime)
+		ON DELETE CASCADE,
+	UNIQUE (seatNum, venueAddress, showDateTime)
 );
 
 CREATE TABLE TicketType (
@@ -137,11 +137,10 @@ CREATE TABLE TicketType (
 CREATE TABLE TicketPrice (
 	seatNum			CHAR(5),
 	venueAddress	VARCHAR(50),
-	showDate		DATE,
-	showTime		CHAR(5),
+	showDateTime	TIMESTAMP,
 	price			DECIMAL(18, 2)		NOT NULL,
-	PRIMARY KEY (seatNum, venueAddress, showDate, showTime),
-	FOREIGN KEY (venueAddress, showDate, showTime) REFERENCES Show(venueAddress, showDate, showTime)
+	PRIMARY KEY (seatNum, venueAddress, showDateTime),
+	FOREIGN KEY (venueAddress, showDateTime) REFERENCES Show(venueAddress, showDateTime)
 		ON DELETE CASCADE
 );
 
@@ -158,12 +157,11 @@ CREATE TABLE WorksFor (
 );
 
 CREATE TABLE Books (
-	memberName		VARCHAR(30),
-	memberDOB		DATE,
-	venueAddress	VARCHAR(50),
-	bookingDate		DATE		NOT NULL,
-	bookingTime		CHAR(5)		NOT NULL,
-	UNIQUE(venueAddress, bookingDate, bookingTime),
+	memberName			VARCHAR(30),
+	memberDOB			DATE,
+	venueAddress		VARCHAR(50),
+	bookingDateTime		TIMESTAMP		NOT NULL,
+	UNIQUE(venueAddress, bookingDateTime),
 	PRIMARY KEY (memberName, memberDOB, venueAddress),
 	FOREIGN KEY (memberName, memberDOB) REFERENCES Manager(memberName, memberDOB)
 		ON DELETE CASCADE,
@@ -175,12 +173,11 @@ CREATE TABLE PlayedIn (
 	songName		VARCHAR(30),
 	bandName		VARCHAR(30),
 	venueAddress	VARCHAR(50),
-	showDate		DATE,
-	showTime		CHAR(5),
-	PRIMARY KEY (songName, bandName, venueAddress, showDate, showTime),
+	showDateTime		TIMESTAMP,
+	PRIMARY KEY (songName, bandName, venueAddress, showDateTime),
 	FOREIGN KEY (songName, bandName) REFERENCES Song(songName, bandName)
 		ON DELETE CASCADE,
-	FOREIGN KEY (venueAddress, showDate, showTime) REFERENCES Show(venueAddress, showDate, showTime)
+	FOREIGN KEY (venueAddress, showDateTime) REFERENCES Show(venueAddress, showDateTime)
 		ON DELETE CASCADE
 );
 
@@ -331,16 +328,29 @@ VALUES ('kfln354', 'p@xqs12SPxZ', 'Kai Fakelastname', 'kaikaifakelastname@gmail.
 INSERT INTO ConcertGoer
 VALUES ('namefive', '5555555', 'Name Five', 'name5@gmail.com', DATE '2000-10-03');
 
+INSERT INTO Show
+VALUES ('231 Oak Rd, Vancouver, BC, Canada', TIMESTAMP '2011-12-30 18:00:00', NULL, 'Arctic Monkeys', 'Coachella', DATE '2005-01-12');
+INSERT INTO Show
+VALUES ('5054 Rat Ave, New York City, NY, USA', TIMESTAMP '2011-12-30 18:30:00', 'The Rat Show', 'Super Cool Indie Band', NULL, NULL);
+INSERT INTO Show
+VALUES ('231 Oak Rd, Vancouver, BC, Canada', TIMESTAMP '2015-02-13 20:00:00', NULL, 'Radiohead', NULL, NULL);
+INSERT INTO Show
+VALUES ('44 44th St, Toronto, ON, Canada', TIMESTAMP '2018-03-31 19:30:00', NULL, 'Joji', NULL, NULL);
+INSERT INTO Show
+VALUES ('101 Real Rd, Chicago, IL, USA', TIMESTAMP '2023-12-30 00:00:00', 'Midnight Music', 'Arctic Monkeys', NULL, NULL);
+
+
+
 INSERT INTO TicketID
-VALUES (1, 'F1399', 'kahnsert123', '231 Oak Rd, Vancouver, BC, Canada', DATE '2011-12-30', '18:00');
+VALUES (1, 'F1399', 'kahnsert123', '231 Oak Rd, Vancouver, BC, Canada', TIMESTAMP '2011-12-30 18:00:00');
 INSERT INTO TicketID
-VALUES (2, 'B1298', 'kahnsert123', '5054 Rat Ave, New York City, NY, USA', DATE '2011-12-30', '18:30');
+VALUES (2, 'B1298', 'kahnsert123', '5054 Rat Ave, New York City, NY, USA', TIMESTAMP '2011-12-30 18:30:00');
 INSERT INTO TicketID
-VALUES (3, 'U3044', 'ILOVEMUSIC', '231 Oak Rd, Vancouver, BC, Canada', DATE '2015-02-13', '20:00');
+VALUES (3, 'U3044', 'ILOVEMUSIC', '231 Oak Rd, Vancouver, BC, Canada', TIMESTAMP '2015-02-13 20:00:00');
 INSERT INTO TicketID
-VALUES (4, 'L3401', 'mjisalive', '44 44th St, Toronto, ON, Canada', DATE '2018-03-31', '19:30');
+VALUES (4, 'L3401', 'mjisalive', '44 44th St, Toronto, ON, Canada', TIMESTAMP '2018-03-31 19:30:00');
 INSERT INTO TicketID
-VALUES (5, 'L1328', 'namefive', '101 Real Rd, Chicago, IL, USA', DATE '2023-12-30', '00:00');
+VALUES (5, 'L1328', 'namefive', '101 Real Rd, Chicago, IL, USA', TIMESTAMP '2023-12-30 00:00:00');
 
 INSERT INTO TicketType 
 VALUES ('F1399', 'Floor');
@@ -353,27 +363,16 @@ VALUES ('L3401', 'Lower');
 INSERT INTO TicketType 
 VALUES ('L1328', 'Lower');
 
-INSERT INTO Show
-VALUES ('231 Oak Rd, Vancouver, BC, Canada', DATE '2011-12-30', '18:00', NULL, 'Arctic Monkeys', 'Coachella', DATE '2005-01-12');
-INSERT INTO Show
-VALUES ('5054 Rat Ave, New York City, NY, USA', DATE '2011-12-30', '18:30', 'The Rat Show', 'Super Cool Indie Band', NULL, NULL);
-INSERT INTO Show
-VALUES ('231 Oak Rd, Vancouver, BC, Canada', DATE '2015-02-13', '20:00', NULL, 'Radiohead', NULL, NULL);
-INSERT INTO Show
-VALUES ('44 44th St, Toronto, ON, Canada', DATE '2018-03-31', '19:30', NULL, 'Joji', NULL, NULL);
-INSERT INTO Show
-VALUES ('101 Real Rd, Chicago, IL, USA', DATE '2023-12-30', '00:00', 'Midnight Music', 'Arctic Monkeys', NULL, NULL);
-
 INSERT INTO TicketPrice
-VALUES ('F1399', '231 Oak Rd, Vancouver, BC, Canada', DATE '2011-12-30', '18:00', 100.00);
+VALUES ('F1399', '231 Oak Rd, Vancouver, BC, Canada', TIMESTAMP '2011-12-30 18:00:00', 100.00);
 INSERT INTO TicketPrice
-VALUES ('B1298', '5054 Rat Ave, New York City, NY, USA', DATE '2011-12-30', '18:30', 50.99);
+VALUES ('B1298', '5054 Rat Ave, New York City, NY, USA', TIMESTAMP '2011-12-30 18:30:00', 50.99);
 INSERT INTO TicketPrice
-VALUES ('U3044', '231 Oak Rd, Vancouver, BC, Canada', DATE '2015-02-13', '20:00', 1200.53);
+VALUES ('U3044', '231 Oak Rd, Vancouver, BC, Canada', TIMESTAMP '2015-02-13 20:00:00', 1200.53);
 INSERT INTO TicketPrice
-VALUES ('L3401', '44 44th St, Toronto, ON, Canada', DATE '2018-03-31', '19:30', 7.98);
+VALUES ('L3401', '44 44th St, Toronto, ON, Canada', TIMESTAMP '2018-03-31 19:30:00', 7.98);
 INSERT INTO TicketPrice
-VALUES ('L1328', '101 Real Rd, Chicago, IL, USA', DATE '2023-12-30', '00:00', 154.22);
+VALUES ('L1328', '101 Real Rd, Chicago, IL, USA', TIMESTAMP '2023-12-30 00:00:00', 154.22);
 
 INSERT INTO WorksFor 
 VALUES ('Alex Turner', DATE '1991-02-03', 'Arctic Monkeys', 'y'); 
@@ -423,23 +422,23 @@ INSERT INTO WorksFor
 VALUES ('Tim Technician', DATE '2001-09-11', 'Radiohead', 'y');
 
 INSERT INTO Books 
-VALUES ('John Manager', DATE '1950-03-03', '231 Oak Rd, Vancouver, BC, Canada', DATE '2011-12-30', '18:00');
+VALUES ('John Manager', DATE '1950-03-03', '231 Oak Rd, Vancouver, BC, Canada', TIMESTAMP '2011-12-30 18:00:00');
 INSERT INTO Books 
-VALUES ('Jim Manager', DATE '1999-04-30', '5054 Rat Ave, New York City, NY, USA', DATE '2011-12-30', '18:30');
+VALUES ('Jim Manager', DATE '1999-04-30', '5054 Rat Ave, New York City, NY, USA', TIMESTAMP '2011-12-30 18:30:00');
 INSERT INTO Books 
-VALUES ('Tom Manager', DATE '1930-02-03', '231 Oak Rd, Vancouver, BC, Canada', DATE '2015-02-13', '20:00');
+VALUES ('Tom Manager', DATE '1930-02-03', '231 Oak Rd, Vancouver, BC, Canada', TIMESTAMP '2015-02-13 20:00:00');
 INSERT INTO Books 
-VALUES ('John Manager', DATE '1950-03-03', '44 44th St, Toronto, ON, Canada', DATE '2018-03-31', '19:30');
+VALUES ('John Manager', DATE '1950-03-03', '44 44th St, Toronto, ON, Canada', TIMESTAMP '2018-03-31 19:30:00');
 INSERT INTO Books 
-VALUES ('John Manager', DATE '1950-03-03', '101 Real Rd, Chicago, IL, USA', DATE '2023-12-30', '00:00');
+VALUES ('John Manager', DATE '1950-03-03', '101 Real Rd, Chicago, IL, USA', TIMESTAMP '2023-12-30 00:00:00');
 
 INSERT INTO PlayedIn 
-VALUES ('Do I Wanna Know?', 'Arctic Monkeys', '231 Oak Rd, Vancouver, BC, Canada', DATE '2011-12-30', '18:00');
+VALUES ('Do I Wanna Know?', 'Arctic Monkeys', '231 Oak Rd, Vancouver, BC, Canada', TIMESTAMP '2011-12-30 18:00:00');
 INSERT INTO PlayedIn 
-VALUES ('Do I Wanna Know?', 'Arctic Monkeys', '101 Real Rd, Chicago, IL, USA', DATE '2023-12-30', '00:00');
+VALUES ('Do I Wanna Know?', 'Arctic Monkeys', '101 Real Rd, Chicago, IL, USA', TIMESTAMP '2023-12-30 00:00:00');
 INSERT INTO PlayedIn 
-VALUES ('Weird Fishes/Arpeggi', 'Radiohead', '231 Oak Rd, Vancouver, BC, Canada', DATE '2015-02-13', '20:00');
+VALUES ('Weird Fishes/Arpeggi', 'Radiohead', '231 Oak Rd, Vancouver, BC, Canada', TIMESTAMP '2015-02-13 20:00:00');
 INSERT INTO PlayedIn 
-VALUES ('Super Epic Song', 'Super Cool Indie Band', '5054 Rat Ave, New York City, NY, USA', DATE '2011-12-30', '18:30');
+VALUES ('Super Epic Song', 'Super Cool Indie Band', '5054 Rat Ave, New York City, NY, USA', TIMESTAMP '2011-12-30 18:30:00');
 INSERT INTO PlayedIn 
-VALUES ('Glimpse of Us', 'Joji', '44 44th St, Toronto, ON, Canada', DATE '2018-03-31', '19:30');
+VALUES ('Glimpse of Us', 'Joji', '44 44th St, Toronto, ON, Canada', TIMESTAMP '2018-03-31 19:30:00');
