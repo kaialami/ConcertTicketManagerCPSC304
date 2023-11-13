@@ -110,8 +110,9 @@ CREATE TABLE Technician (
 
 
 CREATE TABLE ConcertGoer (
-	userID			INTEGER	PRIMARY KEY,
-	goerName		VARCHAR(30)	NOT NULL,
+	userID			VARCHAR(30)	PRIMARY KEY,
+	pass			VARCHAR(30) 	NOT NULL,
+	goerName		VARCHAR(30)		NOT NULL,
 	email 			VARCHAR(30) 	UNIQUE	NOT NULL,
 	dob				DATE
 );
@@ -119,7 +120,7 @@ CREATE TABLE ConcertGoer (
 CREATE TABLE TicketID (
 	ticketID		INTEGER	PRIMARY KEY,
 	seatNum			VARCHAR(30)	NOT NULL,
-	userID			INTEGER,
+	userID			VARCHAR(30),
 	venueAddress	VARCHAR(50)	NOT NULL,
 	showDate		DATE		NOT NULL,
 	showTime		CHAR(5)	NOT NULL,
@@ -320,26 +321,26 @@ INSERT INTO Venue
 VALUES ('101 Real Rd, Chicago, IL, USA', 'Real Ones', 40, 21);
 
 INSERT INTO ConcertGoer
-VALUES (1, 'Kahn Sert', 'iloveconcerts@gmail.com', DATE '1990-01-03');
+VALUES ('kahnsert123', 'thisismypassword', 'Kahn Sert', 'iloveconcerts@gmail.com', DATE '1990-01-03');
 INSERT INTO ConcertGoer
-VALUES (2, 'Micheal Joaquin', 'mikejoaq@gmail.com', NULL);
+VALUES ('ILOVEMUSIC', 'anotherpassword', 'Micheal Joaquin', 'mikejoaq@gmail.com', NULL);
 INSERT INTO ConcertGoer
-VALUES (3, 'Micheal Jackson', '123mjalive@gmail.com', DATE '1995-04-30');
+VALUES ('mjisalive', 'abcdefg123***', 'Micheal Jackson', '123mjalive@gmail.com', DATE '1995-04-30');
 INSERT INTO ConcertGoer
-VALUES (4, 'Kai Fakelastname', 'kaikaifakelastname@gmail.com', NULL);
+VALUES ('kfln354', 'p@xqs12SPxZ', 'Kai Fakelastname', 'kaikaifakelastname@gmail.com', NULL);
 INSERT INTO ConcertGoer
-VALUES (5, 'Name Five', 'name5@gmail.com', DATE '2000-10-03');
+VALUES ('namefive', '5555555', 'Name Five', 'name5@gmail.com', DATE '2000-10-03');
 
 INSERT INTO TicketID
-VALUES (1, 'F1399', 1, '231 Oak Rd, Vancouver, BC, Canada', DATE '2011-12-30', '18:00');
+VALUES (1, 'F1399', 'kahnsert123', '231 Oak Rd, Vancouver, BC, Canada', DATE '2011-12-30', '18:00');
 INSERT INTO TicketID
-VALUES (2, 'B1298', 1, '5054 Rat Ave, New York City, NY, USA', DATE '2011-12-30', '18:30');
+VALUES (2, 'B1298', 'kahnsert123', '5054 Rat Ave, New York City, NY, USA', DATE '2011-12-30', '18:30');
 INSERT INTO TicketID
-VALUES (3, 'U3044', 2, '231 Oak Rd, Vancouver, BC, Canada', DATE '2015-02-13', '20:00');
+VALUES (3, 'U3044', 'ILOVEMUSIC', '231 Oak Rd, Vancouver, BC, Canada', DATE '2015-02-13', '20:00');
 INSERT INTO TicketID
-VALUES (4, 'L3401', 3, '44 44th St, Toronto, ON, Canada', DATE '2018-03-31', '19:30');
+VALUES (4, 'L3401', 'mjisalive', '44 44th St, Toronto, ON, Canada', DATE '2018-03-31', '19:30');
 INSERT INTO TicketID
-VALUES (5, 'L1328', 4, '101 Real Rd, Chicago, IL, USA', DATE '2023-12-30', '00:00');
+VALUES (5, 'L1328', 'namefive', '101 Real Rd, Chicago, IL, USA', DATE '2023-12-30', '00:00');
 
 INSERT INTO TicketType 
 VALUES ('F1399', 'Floor');
