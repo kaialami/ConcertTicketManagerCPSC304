@@ -125,6 +125,13 @@
 
             }
 
+            function handleSearchTicketsRequest() {
+                $venue = $_POST['searchTicketsVenueRequest'];
+                $date = $_POST['searchTicketsDateRequest'];
+                $time = $_POST['searchTicketsTimeRequest'];
+                echo "<p>" . $venue . "@" . $date . " " . $time . "</p>";
+            }
+
             function handlePOSTRequest() {
                 if (connectToDB()) {
                     if (array_key_exists("viewTicketsRequest", $_POST)) {
@@ -138,6 +145,9 @@
                     }
                     if (array_key_exists("searchShowsEventRequest", $_POST)) {
                         handleSearchShowsEventRequest();
+                    }
+                    if (array_key_exists("searchTickets", $_POST)) {
+                        handleSearchTicketsRequest();
                     }
                 }
 
@@ -202,10 +212,10 @@
             <form method="post">
                 <input type="hidden" name="userID" value=<?php echo $userID ?>>
                 <input type="text" name="searchTicketsVenueRequest">
-                <input type="text" name="searchTicketsDateRequest">
-                <input type="text" name="searchTicketsTimeRequest">
-                <label><input type="radio" name="ampm" value="AM">AM</label>
-                <label><input type="radio" name="ampm" value="PM">PM</label>
+                <input type="date" name="searchTicketsDateRequest">
+                <input type="time" name="searchTicketsTimeRequest">
+                <!-- <label><input type="radio" name="ampm" value="AM">AM</label>
+                <label><input type="radio" name="ampm" value="PM">PM</label> -->
                 <input type="submit" value="Search" name="searchTickets">
             </form>
         </div>
@@ -215,6 +225,12 @@
             <input type="text" name="purchaseTicketRequest">
             <input type="submit" value="Purchase" name="purchaseTicket">
         </form>
+
+        <?php 
+            if (isset($_POST['searchTickets'])) {
+                handlePOSTRequest();
+            }
+        ?>
 
 
     </body>
