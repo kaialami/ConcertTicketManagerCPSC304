@@ -51,7 +51,7 @@
                         
                         while ($row = OCI_Fetch_Array($result, OCI_BOTH)) {
                             $datetime = formatDateTime($row['SHOWDATETIME']);
-                            echo "<tr><td>" . $row['SEATNUM'] . "</td><td>" . $row['VENUEADDRESS'] . "</td><td>" . $datetime[0] . "</td><td>" . $datetime[1] . " " . $datetime[2] . "</td><td>" . $row['PRICE'] . "</td></tr>";
+                            echo "<tr><td>" . $row['SEATNUM'] . "</td><td>" . $row['VENUEADDRESS'] . "</td><td>" . $datetime[0] . "</td><td>" . $datetime[1] . " " . $datetime[2] . "</td><td>$" . $row['PRICE'] . "</td></tr>";
                         }
     
                         echo "</table>";
