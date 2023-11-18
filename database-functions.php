@@ -49,6 +49,7 @@
         return $statement;
     }
 
+    // returns array where indexes 0, 1, 2 are date, time, AM/PM, respectively
     function formatDateTime($datetime) {
         $split = explode(" ", $datetime);
         $temp = $split[1];
