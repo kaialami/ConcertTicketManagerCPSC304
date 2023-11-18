@@ -22,12 +22,16 @@
             margin: 8px;
         }
 
+        p {
+            text-align: left;
+        }
+
     </style>
 </head>
 <body>
     <h1>Welcome to Music Manager.</h1>
-    <p>Choose your mode:</p>
-    <br> <br>
+    <h3>Choose your mode:</h3>
+    <br><br>
     <div>
         <a href="band-login.php">
             <img src="images/Band.png"/>
