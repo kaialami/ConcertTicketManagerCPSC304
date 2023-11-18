@@ -8,6 +8,7 @@
             display: table;
             margin: auto;
         }
+        
         body {
             text-align: center;
             display: table-cell;
@@ -15,26 +16,26 @@
             background-color: SlateGray;
             font-family: "Lato", sans-serif;
         }
+        
         img {
-            width:894px;
-            height:707px;
+            width:694px;
+            height:547px;
             margin: 8px;
         }
+
     </style>
 </head>
 <body>
-    <h1>
-        Welcome to Music Manager.
-    </h1>
-    <p>
-        Choose your mode:
-        <br> <br>
+    <h1>Welcome to Music Manager.</h1>
+    <p>Choose your mode:</p>
+    <br> <br>
+    <div>
         <a href="band-login.html">
             <img src="images/Band.png"/>
         </a>
         <a href="concertgoer-login.html">
             <img src="images/concertgoer.png"/>
         </a>
-    </p>
+    </div>
 </body>
 </html>
