@@ -109,7 +109,19 @@
             Event name:  <input type="text" name="searchShowsEventRequest">
             <input type="submit" value="Search" name="searchEventVenue">
         </form>
-        <br/>
         <p>(php will query and display results in table that appears here)</p>
+
+        <br>
+        <hr>
+
+        <h2>Purchase Tickets</h2>
+        <p>Enter the ticket ID number you would like to purchase.</p>
+        <form method="post">
+            <input type="hidden" name="userID" value=<?php echo $userID ?>>
+            <input type="text" name="purchaseTicketRequest">
+            <input type="submit" value="Purchase" name="purchaseTicket">
+        </form>
+        
+
     </body>
 </html>
