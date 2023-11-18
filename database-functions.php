@@ -1,6 +1,5 @@
-<!-- Taken from CPSC304 oracle-test.php tutorial -->
-
 <?php 
+    // Taken from CPSC304 oracle-test.php tutorial
     $success = true;
     $db_conn = NULL;
 
