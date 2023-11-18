@@ -30,10 +30,10 @@
     <p>Choose your mode:</p>
     <br> <br>
     <div>
-        <a href="band-login.html">
+        <a href="band-login.php">
             <img src="images/Band.png"/>
         </a>
-        <a href="concertgoer-login.html">
+        <a href="concertgoer-login.php">
             <img src="images/concertgoer.png"/>
         </a>
     </div>
