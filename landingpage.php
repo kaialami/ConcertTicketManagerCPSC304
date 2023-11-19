@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html>
 <title> Music Manager</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
