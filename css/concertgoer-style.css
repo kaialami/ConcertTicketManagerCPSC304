@@ -1,0 +1,27 @@
+input {
+    padding: 10px;
+    border: 1px solid black;
+    border-radius: 3px;
+    transition-duration: 100ms;
+    font-size: 18px;
+    margin: 10px;
+    margin-left: 0px;
+
+}
+
+button {
+    padding: 10px;
+    font-size: 18px; 
+    background-color: #fff;
+    border: 2px solid steelblue;
+    color: steelblue;
+    border-radius: 3px;
+    transition-duration: 100ms;
+
+}
+
+button:hover {
+    background-color: steelblue;
+    color: #fff;
+    cursor: pointer;
+}

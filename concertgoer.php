@@ -5,8 +5,8 @@
 <head>
     <title>Concert Goer</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
-    <link rel="stylesheet" href="concertgoer-style.css">
-    <link rel="stylesheet" href="navbar-style.css">
+    <link rel="stylesheet" href="css/concertgoer-style.css">
+    <link rel="stylesheet" href="css/navbar-style.css">
     <style>
         body {
             margin: 0;
