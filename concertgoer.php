@@ -2,40 +2,39 @@
 <!-- https://stackoverflow.com/questions/871858/php-pass-variable-to-next-page -->
 <!-- https://stackoverflow.com/questions/6833914/how-to-prevent-the-confirm-form-resubmission-dialog -->
 <html>
-<title>Music Manager - Concertgoer</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
 <head>
     <title>Concert Goer</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
+    <link rel="stylesheet" href="concertgoer-style.css">
+    <link rel="stylesheet" href="navbar-style.css">
     <style>
-        h1 {
-            text-align: center;
+        body {
+            margin: 0;
+            font-family: "Lato", sans-serif;
+            color: steelblue;
         }
 
-        .navbar {
-            background-color: #333;
-            overflow: hidden;
-            width: 100%;
-            position: fixed;
-            top: 0;
+        hr {
+            border: 1px solid steelblue;
+        }
+        
+        table {
+            text-align: left;
         }
 
-        .navbar a {
-            color: #fff;
-            text-decoration: none;
-            float: left;
-            display: block;
-            text-align: center;
-            font-size: 20px;
-            padding: 15px 15px;
-        }
-
-        .navbar a:hover {
-            background: #ddd;
+        th, td {
+            padding-right: 25px;
             color: black;
+            font-size: 20px;
         }
+
+        input[type="text"] {
+            width: 20%;
+        }
+
 
         a.anchor {
-            top: -100px;
+            top: -50px;
             display: block;
             position: relative;
             visibility: hidden;
@@ -46,20 +45,30 @@
             margin-top: 30px;
         }
 
-        body {
-            margin: 0;
-            background-color: steelblue;
-            font-family: "Lato", sans-serif;
+        .page-title {
+            text-align: center;
+            padding: 20px;
+            font-size: 24px;
         }
 
-        table {
-            text-align: left;
+        .section {
+            padding: 10px;
         }
 
-        th, td {
-            padding-right: 25px;
+        .section h2 {
+            font-size: 30px;
         }
 
+        .section p {
+            font-size: 20px;
+        }
+
+        .search-by {
+            margin: 20px;
+            margin-left: 0px;
+        }
+
+        
     </style>
 
 </head>
@@ -128,12 +137,12 @@ function handleSearchShowsBandRequest()
 {
     $bandname = $_POST['searchShowsBandRequest'];
     $bandname = trim($bandname);
-    $result = executePlainSQL("SELECT * FROM Show WHERE bandname = '" . $bandname . "'");
-    $count = executePlainSQL("SELECT Count(*) FROM Show WHERE bandname = '" . $bandname . "'");
+    $result = executePlainSQL("SELECT * FROM Show WHERE regexp_like(bandname, '^" . $bandname . "$', 'i')");
+    $count = executePlainSQL("SELECT Count(*) FROM Show WHERE regexp_like(bandname, '^" . $bandname . "$', 'i')");
 
     if ($rowCount = oci_fetch_row($count)) {
         if ($rowCount[0] == "0") {
-            echo "<p>No shows for that performer. Make sure the capitalization is correct!</p><br> <br> <br>";
+            echo "<p>No shows for that performer.</p><br> <br> <br>";
         } else {
             printShowQueryResults($result);
         }
@@ -145,12 +154,12 @@ function handleSearchShowsVenueRequest()
 {
     $venue = $_POST['searchShowsVenueRequest'];
     $venue = trim($venue);
-    $result = executePlainSQL("SELECT * FROM Show WHERE venueaddress = '" . $venue . "'");
-    $count = executePlainSQL("SELECT Count(*) FROM Show WHERE venueaddress = '" . $venue . "'");
+    $result = executePlainSQL("SELECT * FROM Show WHERE regexp_like(venueaddress, '^" . $venue . "$', 'i')");
+    $count = executePlainSQL("SELECT Count(*) FROM Show WHERE regexp_like(venueaddress, '^" . $venue . "$', 'i')");
 
     if ($rowCount = oci_fetch_row($count)) {
         if ($rowCount[0] == "0") {
-            echo "<p>No shows for that venue address. Make sure the capitalization is correct!</p><br> <br> <br>";
+            echo "<p>No shows for that venue address. Make sure you typed the address fully and correctly!</p><br> <br> <br>";
         } else {
             printShowQueryResults($result);
         }
@@ -161,12 +170,12 @@ function handleSearchShowsEventRequest()
 {
     $event = $_POST['searchShowsEventRequest'];
     $event = trim($event);
-    $result = executePlainSQL("SELECT * FROM Show WHERE eventname = '" . $event . "'");
-    $count = executePlainSQL("SELECT Count(*) FROM Show WHERE eventname = '" . $event . "'");
+    $result = executePlainSQL("SELECT * FROM Show WHERE regexp_like(eventname, '^" . $event . "$', 'i')");
+    $count = executePlainSQL("SELECT Count(*) FROM Show WHERE regexp_like(eventname, '^" . $event . "$', 'i')");
 
     if ($rowCount = oci_fetch_row($count)) {
         if ($rowCount[0] == "0") {
-            echo "<p>No shows for that event. Make sure the capitalization is correct!</p><br> <br> <br>";
+            echo "<p>No shows for that event.</p><br> <br> <br>";
         } else {
             printShowQueryResults($result);
         }
@@ -217,15 +226,17 @@ function handlePOSTRequest()
 </div>
 
 <div class="main">
-    <h1>Hello, <?php echo $userID ?>!</h1>
+    <div class="page-title">
+        <h1>Hello, <?php echo $userID ?>!</h1>
+    </div>
 
-
-    <h2 id="Purchased Tickets">Purchased Tickets</h2>
-    <form action="#" method="post">
-        <input type="hidden" name="userID" value=<?php echo $userID ?>>
-        <input type="hidden" name="viewTicketsRequest">
-        <input type="submit" name="viewTickets" value="View Tickets">
-    </form>
+    <div class="section">
+        <h2 id="Purchased Tickets">Purchased Tickets</h2>
+        <form action="#" method="post">
+            <input type="hidden" name="userID" value=<?php echo $userID ?>>
+            <input type="hidden" name="viewTicketsRequest">
+            <button type="submit">View Tickets</button>
+        </form>
 
     <br>
 
@@ -236,78 +247,77 @@ function handlePOSTRequest()
         echo "<br> <br> <br> <br> <br> <br> <br> <br> <br> <br>";
     }
     ?>
-
-    <br>
-    <hr>
-
-    
-    <a class="anchor" id="search"></a>
-    <h2>Search for shows by</h2>
-
-    <p>Performers and bands:</p>
-    <form action="#search" method="post">
-        <input type="hidden" name="userID" value=<?php echo $userID ?>>
-        <input type="text" name="searchShowsBandRequest">
-        <input type="submit" value="Search" name="searchShowsBand">
-    </form>
-    <p>Venue address:</p>
-    <form action="#search" method="post">
-        <input type="hidden" name="userID" value=<?php echo $userID ?>>
-        <input type="text" name="searchShowsVenueRequest">
-        <input type="submit" , value="Search" name="searchShowsVenue">
-    </form>
-    <p>Event name:</p>
-    <form action="#search" method="post">
-        <input type="hidden" name="userID" value=<?php echo $userID ?>>
-        <input type="text" name="searchShowsEventRequest">
-        <input type="submit" value="Search" name="searchEventVenue">
-    </form>
-
-    <br>
-
-    <?php
-    if (isset($_POST['searchShowsBandRequest']) || isset($_POST['searchShowsVenueRequest']) || isset($_POST['searchShowsEventRequest'])) {
-        handlePOSTRequest();
-    } else {
-        echo "<br> <br> <br> <br> <br> <br> <br> <br> <br> <br>";
-    }
-    ?>
     
     <br>
+    </div>
+
     <hr>
 
-    <a class="anchor" id="buy"></a>
-    <h2>Purchase Tickets</h2>
-    <p>Search for available tickets by venue address, date and time.</p>
-    <div>
+    <div class="section">
+        <a class="anchor" id="search"></a>
+        <h2>Search for shows by</h2>
+
+        <form class="search-by" action="#search" method="post">
+            <input type="hidden" name="userID" value=<?php echo $userID ?>>
+            <input type="text" name="searchShowsBandRequest" placeholder="Performer">
+            <button type="submit">Search</button>
+        </form>
+        <form class="search-by" action="#search" method="post">
+            <input type="hidden" name="userID" value=<?php echo $userID ?>>
+            <input type="text" name="searchShowsVenueRequest" placeholder="Venue Address">
+            <button type="submit">Search</button>
+        </form>
+        <form class="search-by" action="#search" method="post">
+            <input type="hidden" name="userID" value=<?php echo $userID ?>>
+            <input type="text" name="searchShowsEventRequest" placeholder="Event Name">
+            <button type="submit">Search</button>
+        </form>
+
+        <br>
+
+        <?php
+        if (isset($_POST['searchShowsBandRequest']) || isset($_POST['searchShowsVenueRequest']) || isset($_POST['searchShowsEventRequest'])) {
+            handlePOSTRequest();
+        } else {
+            echo "<br> <br> <br> <br> <br> <br> <br> <br> <br> <br>";
+        }
+        ?>
+        <br>
+    </div>
+
+    <hr>
+
+    <div class="section">
+        <a class="anchor" id="buy"></a>
+        <h2>Buy Tickets</h2>
+        <p>Search for available tickets</p>
         <form action="#buy" method="post">
             <input type="hidden" name="userID" value=<?php echo $userID ?>>
-            <input type="text" name="searchTicketsVenueRequest">
+            <input type="text" name="searchTicketsVenueRequest" placeholder="Venue Address">
             <input type="date" name="searchTicketsDateRequest">
             <input type="time" name="searchTicketsTimeRequest">
-            <input type="submit" value="Search" name="searchTickets">
+            <button type="submit">Search</button>
         </form>
+        <br>
+        <p>Enter the ticket ID number you would like to purchase</p>
+        <form action="#buy" method="post">
+            <input type="hidden" name="userID" value=<?php echo $userID ?>>
+            <input type="text" name="purchaseTicketRequest" style="width: 5%; text-align: right;" placeholder="ID Number">
+            <button type="submit">Purchase</button>
+        </form>
+
+        <br>
+
+        <?php
+        if (isset($_POST['searchTicketsVenueRequest'])) {
+            handlePOSTRequest();
+        } else {
+            echo "<br> <br> <br> <br> <br> <br> <br> <br> <br> <br>";
+        }
+        ?>
+        
+        <br>
     </div>
-    <p>Enter the ticket ID number you would like to purchase.</p>
-    <form action="#buy" method="post">
-        <input type="hidden" name="userID" value=<?php echo $userID ?>>
-        <input type="text" name="purchaseTicketRequest">
-        <input type="submit" value="Purchase" name="purchaseTicket">
-    </form>
-
-    <br>
-
-    <?php
-    if (isset($_POST['searchTickets'])) {
-        handlePOSTRequest();
-    } else {
-        echo "<br> <br> <br> <br> <br> <br> <br> <br> <br> <br>";
-    }
-    ?>
-    
-    <br>
-    <hr>
-
 </div>
 
 

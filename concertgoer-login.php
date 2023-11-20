@@ -1,8 +1,10 @@
 <!DOCTYPE html>
 <html>
-<title>Music Manager: Concertgoer Login</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
     <head>
+    <title>Concertgoer Login</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
+    <link rel="stylesheet" href="concertgoer-style.css">
+    <link rel="stylesheet" href="navbar-style.css">
         <style>
             body {
                 margin: 0;
@@ -23,10 +25,6 @@
             }
 
             input {
-                padding: 10px;
-                border: 1px solid black;
-                border-radius: 3px;
-                transition-duration: 100ms;
                 width: 70%;
             }
 
@@ -34,51 +32,13 @@
                 margin-top: 5px;
             }
 
-            button {
-                padding: 6px 10px; 
-                background-color: #fff;
-                border: 2px solid steelblue;
-                color: steelblue;
-                border-radius: 3px;
-                transition-duration: 100ms;
-
-            }
-
-            button:hover {
-                background-color: steelblue;
-                color: #fff;
-                cursor: pointer;
-            }
 
             .main {
                 padding: 16px;
                 margin-top: 40px;
             }
 
-            .navbar {
-                background-color: #333;
-                overflow: hidden;
-                width: 100%;
-                position: fixed;
-                top: 0;
-            }
-
-            .navbar a {
-                color: #fff;
-                text-decoration: none;
-                float: left;
-                display: block;
-                text-align: center;
-                font-size: 20px;
-                padding: 15px 15px;
-            }
-
-            .navbar a:hover {
-                background: #ddd;
-                color: black;
-            }
-
-            .inline-form {
+            .form-container {
                 margin: auto;
                 padding: 20px;
                 display: table;
@@ -210,7 +170,7 @@
         <div class="page-title">
             <h1>Welcome!</h2>
         </div>
-        <div class="inline-form">
+        <div class="form-container">
             <div class="form">
                 <h1>Login as a ConcertGoer</h1>
                 <form method="post" action="concertgoer-login.php">
