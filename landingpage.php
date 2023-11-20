@@ -1,39 +1,52 @@
-<!DOCTYPE html>
 <html>
 <title> Music Manager</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
 <head>
     <style>
-        html {
-            display: table;
-            margin: auto;
-        }
+        
         
         body {
             text-align: center;
-            display: table-cell;
             vertical-align: middle;
-            background-color: SlateGray;
+            /* background-color: slategray; */
             font-family: "Lato", sans-serif;
         }
         
-        img {
+        /* img {
             width:694px;
             height:547px;
             margin: 8px;
+        } */
+
+        img {
+            width: 600px;
+            padding: 30px;
         }
 
         p {
             text-align: left;
         }
 
+        .page-title {
+            margin: auto;
+            display: table;
+            padding: 20px;
+        }
+
+        .image-container {
+            margin: auto;
+            display: table;
+        }
+
     </style>
 </head>
 <body>
-    <h1>Welcome to Music Manager.</h1>
-    <h3>Choose your mode:</h3>
+    <div class="page-title">
+        <h1>Welcome to Music Manager!</h1>
+        <h3>Choose your mode</h3>
+    </div>
     <br><br>
-    <div>
+    <div class="image-container">
         <a href="band-login.php">
             <img src="images/Band.png"/>
         </a>
