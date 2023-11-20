@@ -63,10 +63,35 @@
         }
         
         function handleCreateUserRequest() {
+            global $db_conn;
+            
             $newUser = $_POST['newUserID'];
             $newPass = $_POST['newPass'];
-            $user = trim($user);
-            $pass = trim($pass);
+            $newGoerName = $_POST['newGoerName'];
+            $newEmail = $_POST['newGoerName'];
+            $newDOB = $_POST['newDOB'];
+            
+            $newUser = trim($newUser);
+            $newPass = trim($newPass);
+            $newGoerName = trim($newGoerName);
+            $newEmail = trim($newEmail);
+            $newDOB = trim($newDOB);
+
+            $retrievedUserID = executePlainSQL("SELECT userID from ConcertGoer where userID = '" . $newUser . "'");
+            $fetchedUserID = oci_fetch_row($retrievedUserID);
+
+            if ($fetchedUserID != false) {
+                echo "<p>Cannot create a new user with that name!</p>";
+            } else {
+                executePlainSQL("INSERT INTO ConcertGoer VALUES  ('" . $newUser . "', '" . $newPass . "', '" . $newGoerName . "', '" . $newEmail . "', DATE '" . $newDOB . "')");
+                oci_commit($db_conn);
+                $_POST['userID'] = $_POST['newUserID'];
+                $_POST['pass'] = $_POST['newPass'];
+                $_SESSION['POST'] = $_POST;
+                header("Location: concertgoer.php");
+            }
+            
+            
         }
 
 
