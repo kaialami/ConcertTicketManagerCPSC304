@@ -7,7 +7,6 @@
 <head>
     <title>Concert Goer</title>
     <style>
-        body {margin: 0;}
         h1 {
             text-align: center;
         }
@@ -48,6 +47,7 @@
         }
 
         body {
+            margin: 0;
             background-color: steelblue;
             font-family: "Lato", sans-serif;
         }
@@ -68,8 +68,9 @@
 include_once("database-functions.php");
 
 session_start();
-$_POST = $_SESSION['POST'];
-$userID = $_POST['userID'];
+$temp = $_SESSION['POST'];
+$userID = $temp['userID'];
+
 
 
 function handleViewTicketsRequest()
@@ -86,12 +87,12 @@ function handleViewTicketsRequest()
             echo "<p>You have purchased " . $rowCount[0] . " tickets:</p>";
             echo "<table>";
             echo "<tr>
-                                <th>Seat Number</th>
-                                <th>Venue Address</th>
-                                <th>Date</th>
-                                <th>Time</th>
-                                <th>Price</th>
-                            </tr>\n";
+                    <th>Seat Number</th>
+                    <th>Venue Address</th>
+                    <th>Date</th>
+                    <th>Time</th>
+                    <th>Price</th>
+                </tr>\n";
 
             while ($row = OCI_Fetch_Array($result, OCI_BOTH)) {
                 $datetime = formatDateTime($row['SHOWDATETIME']);
