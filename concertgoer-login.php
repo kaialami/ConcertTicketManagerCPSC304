@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html>
     <head>
-    <title>Concertgoer Login</title>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
-    <link rel="stylesheet" href="css/concertgoer-style.css">
-    <link rel="stylesheet" href="css/navbar-style.css">
+        <title>Concertgoer Login</title>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
+        <link rel="stylesheet" href="css/concertgoer-style.css">
+        <link rel="stylesheet" href="css/navbar-style.css">
         <style>
             body {
                 margin: 0;
