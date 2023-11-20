@@ -67,6 +67,8 @@
 <?php
 include_once("database-functions.php");
 
+session_start();
+$_POST = $_SESSION['POST'];
 $userID = $_POST['userID'];
 
 
