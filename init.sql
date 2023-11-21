@@ -26,6 +26,7 @@ CREATE TABLE Band (
 	bandName		VARCHAR(30)	PRIMARY KEY,
 	dateStarted		DATE,
 	recordLabelName	VARCHAR(30),
+    pass			VARCHAR(30) 	NOT NULL,
     FOREIGN KEY (recordLabelName) 
 		REFERENCES RecordLabel(recordLabelName)
 	    ON DELETE SET NULL
@@ -196,15 +197,15 @@ INSERT INTO RecordLabel
 VALUES 	('Atlantic Records', 2011);
 
 INSERT INTO Band
-VALUES ('Arctic Monkeys', DATE '2006-02-10', 'RCA Records');
+VALUES ('Arctic Monkeys', DATE '2006-02-10', 'RCA Records', 'Arctic Monkeys');
 INSERT INTO Band
-VALUES ('Radiohead', DATE '1996-02-11', 'RCA Records');
+VALUES ('Radiohead', DATE '1996-02-11', 'RCA Records', 'Radiohead');
 INSERT INTO Band
-VALUES ('Joji', DATE '2005-07-02', 'Universal Music');
+VALUES ('Joji', DATE '2005-07-02', 'Universal Music', 'Joji');
 INSERT INTO Band
-VALUES ('Kiss', DATE '1975-01-01', 'Warner Records');
+VALUES ('Kiss', DATE '1975-01-01', 'Warner Records', 'Kiss');
 INSERT INTO Band
-VALUES ('Super Cool Indie Band', DATE '1920-04-05', NULL);
+VALUES ('Super Cool Indie Band', DATE '1920-04-05', NULL, 'Super Cool Indie Band');
 
 INSERT INTO Song
 VALUES ('Do I Wanna Know?', 'Arctic Monkeys', '4:34', 'Indie Rock', 'James Ford', DATE  '2013-06-19');
