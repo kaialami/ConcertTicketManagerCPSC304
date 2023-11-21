@@ -26,7 +26,7 @@ CREATE TABLE Band (
 	bandName		VARCHAR(30)	PRIMARY KEY,
 	dateStarted		DATE,
 	recordLabelName	VARCHAR(30),
-    pass			VARCHAR(30) 	NOT NULL,
+    pass			VARCHAR(255) 	NOT NULL,
     FOREIGN KEY (recordLabelName) 
 		REFERENCES RecordLabel(recordLabelName)
 	    ON DELETE SET NULL
@@ -111,7 +111,7 @@ CREATE TABLE Technician (
 
 CREATE TABLE ConcertGoer (
 	userID			VARCHAR(30)	PRIMARY KEY,
-	pass			VARCHAR(30) 	NOT NULL,
+	pass			VARCHAR(255) 	NOT NULL,
 	goerName		VARCHAR(30)		NOT NULL,
 	email 			VARCHAR(30) 	UNIQUE	NOT NULL,
 	dob				DATE
