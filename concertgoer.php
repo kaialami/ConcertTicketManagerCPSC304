@@ -25,7 +25,11 @@
         th, td {
             padding-right: 25px;
             color: black;
-            font-size: 20px;
+            font-size: 18px;
+        }
+
+        th {
+            padding-bottom: 10px;
         }
 
         input[type="text"] {
@@ -48,7 +52,7 @@
         .page-title {
             text-align: center;
             padding: 20px;
-            font-size: 24px;
+            font-size: 22px;
         }
 
         .section {
@@ -56,11 +60,11 @@
         }
 
         .section h2 {
-            font-size: 30px;
+            font-size: 24px;
         }
 
         .section p {
-            font-size: 20px;
+            font-size: 18px;
         }
 
         .search-by {
@@ -79,6 +83,8 @@ include_once("database-functions.php");
 session_start();
 $temp = $_SESSION['POST'];
 $userID = $temp['userID'];
+
+$linebreaks = "<br> <br> <br> <br> <br>";
 
 
 
@@ -244,7 +250,7 @@ function handlePOSTRequest()
     if (isset($_POST['viewTicketsRequest'])) {
         handlePOSTRequest();
     } else {
-        echo "<br> <br> <br> <br> <br> <br> <br> <br> <br> <br>";
+        echo $linebreaks;
     }
     ?>
     
@@ -279,7 +285,7 @@ function handlePOSTRequest()
         if (isset($_POST['searchShowsBandRequest']) || isset($_POST['searchShowsVenueRequest']) || isset($_POST['searchShowsEventRequest'])) {
             handlePOSTRequest();
         } else {
-            echo "<br> <br> <br> <br> <br> <br> <br> <br> <br> <br>";
+            echo $linebreaks;
         }
         ?>
         <br>
@@ -312,7 +318,7 @@ function handlePOSTRequest()
         if (isset($_POST['searchTicketsVenueRequest'])) {
             handlePOSTRequest();
         } else {
-            echo "<br> <br> <br> <br> <br> <br> <br> <br> <br> <br>";
+            echo $linebreaks;
         }
         ?>
         

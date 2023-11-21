@@ -24,4 +24,5 @@ button:hover {
     background-color: steelblue;
     color: #fff;
     cursor: pointer;
+    border-color: rgb(47, 92, 128);
 }

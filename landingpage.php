@@ -12,12 +12,6 @@
             font-family: "Lato", sans-serif;
         }
         
-        /* img {
-            width:694px;
-            height:547px;
-            margin: 8px;
-        } */
-
         img {
             width: 600px;
             padding: 30px;
@@ -36,6 +30,13 @@
         .image-container {
             margin: auto;
             display: table;
+        }
+
+        @media (max-width: 1300px) {
+            img {
+                width: 450px;
+                padding: 5px 20px;
+            }
         }
 
     </style>
