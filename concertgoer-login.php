@@ -21,7 +21,7 @@
             
             p {
                 text-align: left;
-                font-size: 20px;
+                font-size: 18px;
             }
 
             input {
@@ -58,7 +58,7 @@
             }
 
             .page-title h1 {
-                font-size: 52px;
+                font-size: 44px;
             }
 
             .error-message p {
