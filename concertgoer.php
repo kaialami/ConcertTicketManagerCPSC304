@@ -143,16 +143,23 @@ function handleSearchShowsBandRequest()
 {
     $bandname = $_POST['searchShowsBandRequest'];
     $bandname = trim($bandname);
-    $result = executePlainSQL("SELECT * FROM Show WHERE regexp_like(bandname, '^" . $bandname . "$', 'i')");
-    $count = executePlainSQL("SELECT Count(*) FROM Show WHERE regexp_like(bandname, '^" . $bandname . "$', 'i')");
 
-    if ($rowCount = oci_fetch_row($count)) {
-        if ($rowCount[0] == "0") {
-            echo "<p>No shows for that performer.</p><br> <br> <br>";
-        } else {
-            printShowQueryResults($result);
+    if (sanitizeInput($bandname)) {
+        $result = executePlainSQL("SELECT * FROM Show WHERE regexp_like(bandname, '^" . $bandname . "$', 'i')");
+        $count = executePlainSQL("SELECT Count(*) FROM Show WHERE regexp_like(bandname, '^" . $bandname . "$', 'i')");
+
+        if ($rowCount = oci_fetch_row($count)) {
+            if ($rowCount[0] == "0") {
+                echo "<p>No shows for that performer.</p><br> <br> <br>";
+            } else {
+                printShowQueryResults($result);
+            }
         }
+    } else {
+        echo "<p>Special characters are not allowed / Input limit reached!</p><br> <br> <br>";
     }
+
+
 
 }
 
@@ -160,6 +167,9 @@ function handleSearchShowsVenueRequest()
 {
     $venue = $_POST['searchShowsVenueRequest'];
     $venue = trim($venue);
+
+    if (sanitizeInput($venue)) {
+
     $result = executePlainSQL("SELECT * FROM Show WHERE regexp_like(venueaddress, '^" . $venue . "$', 'i')");
     $count = executePlainSQL("SELECT Count(*) FROM Show WHERE regexp_like(venueaddress, '^" . $venue . "$', 'i')");
 
@@ -170,12 +180,19 @@ function handleSearchShowsVenueRequest()
             printShowQueryResults($result);
         }
     }
+
+    } else {
+        echo "<p>Special characters are not allowed / Input limit reached!</p><br> <br> <br>";
+    }
 }
 
 function handleSearchShowsEventRequest()
 {
     $event = $_POST['searchShowsEventRequest'];
     $event = trim($event);
+
+    if (sanitizeInput($event)) {
+
     $result = executePlainSQL("SELECT * FROM Show WHERE regexp_like(eventname, '^" . $event . "$', 'i')");
     $count = executePlainSQL("SELECT Count(*) FROM Show WHERE regexp_like(eventname, '^" . $event . "$', 'i')");
 
@@ -187,6 +204,10 @@ function handleSearchShowsEventRequest()
         }
     }
 
+    } else {
+        echo "<p>Special characters are not allowed / Input limit reached!</p><br> <br> <br>";
+    }
+
 }
 
 function handleSearchTicketsRequest()
@@ -194,7 +215,30 @@ function handleSearchTicketsRequest()
     $venue = $_POST['searchTicketsVenueRequest'];
     $date = $_POST['searchTicketsDateRequest'];
     $time = $_POST['searchTicketsTimeRequest'];
-    echo "<p>" . $venue . "@" . $date . " " . $time . "</p>";
+
+    $venue = trim($venue);
+
+    if (sanitizeInput($venue)) {
+        if (!$date || !$time) {
+            echo "Please fill out all fields.";
+        } else {
+            echo "<p>" . $venue . "@" . $date . " " . $time . "</p>";
+            // more needed
+        }
+    } else {
+        echo "<p>Special characters are not allowed / Input limit reached!</p><br> <br> <br>";
+    }
+}
+
+function handlePurchaseTicketRequest() {
+    $idNum = $_POST['purchaseTicketRequest'];
+
+    if (sanitizeInput($idNum)) {
+        // insert tuple
+        echo "<p>Ticket purchased.</p>";
+    } else {
+        echo "<p>Special characters are not allowed / Input limit reached!</p>";
+    }
 }
 
 function handlePOSTRequest()
@@ -212,8 +256,11 @@ function handlePOSTRequest()
         if (array_key_exists("searchShowsEventRequest", $_POST)) {
             handleSearchShowsEventRequest();
         }
-        if (array_key_exists("searchTickets", $_POST)) {
+        if (array_key_exists("searchTicketsVenueRequest", $_POST)) {
             handleSearchTicketsRequest();
+        }
+        if (array_key_exists("purchaseTicketRequest", $_POST)) {
+            handlePurchaseTicketRequest();
         }
     }
 
@@ -304,6 +351,15 @@ function handlePOSTRequest()
             <input type="time" name="searchTicketsTimeRequest">
             <button type="submit">Search</button>
         </form>
+
+        <?php
+        if (isset($_POST['searchTicketsVenueRequest'])) {
+            handlePOSTRequest();
+        } else {
+            echo $linebreaks;
+        }
+        ?>
+
         <br>
         <p>Enter the ticket ID number you would like to purchase</p>
         <form action="#buy" method="post">
@@ -315,7 +371,7 @@ function handlePOSTRequest()
         <br>
 
         <?php
-        if (isset($_POST['searchTicketsVenueRequest'])) {
+        if (isset($_POST['purchaseTicketRequest'])) {
             handlePOSTRequest();
         } else {
             echo $linebreaks;
