@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
     <link rel="stylesheet" href="css/concertgoer-style.css">
     <link rel="stylesheet" href="css/navbar-style.css">
+    <link rel="stylesheet" href="css/input-style.css">
     <style>
         body {
             margin: 0;
@@ -34,6 +35,11 @@
 
         input[type="text"] {
             width: 20%;
+        }
+
+        input[type="number"] {
+            width: 100px;
+            text-align: right;
         }
 
 
@@ -364,7 +370,7 @@ function handlePOSTRequest()
         <p>Enter the ticket ID number you would like to purchase</p>
         <form action="#buy" method="post">
             <input type="hidden" name="userID" value=<?php echo $userID ?>>
-            <input type="text" name="purchaseTicketRequest" style="width: 5%; text-align: right;" placeholder="ID Number">
+            <input type="number" name="purchaseTicketRequest" placeholder="ID Number">
             <button type="submit">Purchase</button>
         </form>
 

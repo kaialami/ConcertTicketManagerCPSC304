@@ -34,7 +34,7 @@
 
         @media (max-width: 1300px) {
             img {
-                width: 450px;
+                width: 400px;
                 padding: 5px 20px;
             }
         }
