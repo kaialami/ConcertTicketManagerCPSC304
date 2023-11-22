@@ -168,7 +168,7 @@ function handleSearchShowsVenueRequest()
     $venue = $_POST['searchShowsVenueRequest'];
     $venue = trim($venue);
 
-    if (sanitizeInput($venue)) {
+    if (sanitizeVenueInput($venue)) {
 
     $result = executePlainSQL("SELECT * FROM Show WHERE regexp_like(venueaddress, '^" . $venue . "$', 'i')");
     $count = executePlainSQL("SELECT Count(*) FROM Show WHERE regexp_like(venueaddress, '^" . $venue . "$', 'i')");
