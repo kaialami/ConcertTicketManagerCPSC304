@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Band Login</title>
+    <title>Band Login - Showtime!</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
     <link rel="stylesheet" href="css/login-style.css">
     <link rel="stylesheet" href="css/navbar-style.css">
@@ -15,10 +15,6 @@
 
         input[type="date"] {
             margin-top: 5px;
-        }
-
-        input[type="radio"] {
-            width: auto;
         }
 
         h3 {
@@ -101,7 +97,6 @@
                     <label><input id="manager" type="radio" name="role" value="manager">Manager </label><br>
                     <label><input id="technician" type="radio" name="role" value="technician">Technician </label><br>
                     <input id="attribute" type="text" name="attribute" placeholder="Instrument"> <br>
-                    <!-- <input id="specialty" type="text" name="specialty" placeholder="Specialty"> <br> -->
                     <button type="submit">Create</button>
                 </form>
             </div>
