@@ -1,3 +1,7 @@
+body {
+    color: steelblue;
+}
+
 input {
     padding: 10px;
     border: 1px solid black;
@@ -10,19 +14,11 @@ input {
 }
 
 button {
-    padding: 10px;
-    font-size: 18px; 
-    background-color: #fff;
     border: 2px solid steelblue;
     color: steelblue;
-    border-radius: 3px;
-    transition-duration: 100ms;
-
 }
 
 button:hover {
     background-color: steelblue;
-    color: #fff;
-    cursor: pointer;
     border-color: rgb(47, 92, 128);
 }

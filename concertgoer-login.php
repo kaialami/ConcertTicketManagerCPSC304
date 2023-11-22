@@ -5,66 +5,16 @@
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
         <link rel="stylesheet" href="css/concertgoer-style.css">
         <link rel="stylesheet" href="css/navbar-style.css">
+        <link rel="stylesheet" href="css/login-style.css">
+        <link rel="stylesheet" href="css/input-style.css">
+        
         <style>
-            body {
-                margin: 0;
-                text-align: left;
-                font-family: "Lato", sans-serif;
-                color: steelblue;
-            }
-            
-            img {
-                width:200px;
-                height:200px;
-                margin: 15px;
-            }
-            
-            p {
-                text-align: left;
-                font-size: 18px;
-            }
-
             input {
                 width: 70%;
             }
 
             input[type="date"] {
                 margin-top: 5px;
-            }
-
-
-            .main {
-                padding: 16px;
-                margin-top: 40px;
-            }
-
-            .form-container {
-                margin: auto;
-                padding: 20px;
-                display: table;
-                /* border: 2px solid red; */
-            }
-
-            .form {
-                display: table-cell;
-                padding: 20px 100px;
-                /* border: 2px solid black; */
-            }
-
-            .page-title {
-                margin: auto;
-                width: 50%;
-                text-align: center;
-            }
-
-            .page-title h1 {
-                font-size: 44px;
-            }
-
-            .error-message p {
-                margin: auto;
-                width: 50%;
-                text-align: center;
             }
 
 

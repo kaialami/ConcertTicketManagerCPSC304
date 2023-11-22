@@ -22,6 +22,18 @@
             border-color: #e66914;
         }
 
+        input {
+            width: 70%;
+        }
+
+        input[type="date"] {
+            margin-top: 5px;
+        }
+
+        input[type="radio"] {
+            width: auto;
+        }
+
         h3 {
             font-size: 16px;
         }
@@ -35,6 +47,13 @@
             visibility: hidden;
         }
 
+        #login {
+            padding-right: 50px;
+        }
+
+        #create {
+            padding-left: 30px;
+        }
 
 
     </style>
@@ -78,7 +97,7 @@
         </div>
         <div class="form-container">
             <div class="form">
-                <h2>Login as a Band</h2>
+                <h1 id="login">Login as a Band</h1>
                 <form method="post">
                     <input type="hidden" name="loginRequest">
                     <input type="text" name="bandName" placeholder="Band Name"> <br>
@@ -87,7 +106,7 @@
                 </form>
             </div>
             <div class="form">
-                <h2>Register your band</h2>
+                <h1>Register your band</h1>
                 <form method="post">
                     <input type="hidden" name="createRequest">
                     <input type="text" name="bandName" placeholder="Band Name"> <br>
