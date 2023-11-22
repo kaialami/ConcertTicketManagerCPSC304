@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Concertgoer Login</title>
+        <title>ConcertGoer Login - Showtime!</title>
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
         <link rel="stylesheet" href="css/concertgoer-style.css">
         <link rel="stylesheet" href="css/navbar-style.css">
@@ -60,6 +60,8 @@
 //                }
                     // this might mess up, idk if we even need rehashing tbh so commented out. they said simple was fine
                     echo "<p>What</p>";
+                    $_POST['pass'] = ""; // dont wanna pass raw password
+                    $_SESSION['POST'] = $_POST;
                     header("Location: concertgoer.php");
                 }
             }
@@ -104,7 +106,8 @@
                     oci_commit($db_conn);
                     if ($success) {
                         $_POST['userID'] = $_POST['newUserID'];
-                        $_POST['pass'] = $_POST['newPass'];
+                        $_POST['pass'] = ""; // dont wanna pass raw password
+                        $_POST['newPass'] = "";
                         $_SESSION['POST'] = $_POST;
                         header("Location: concertgoer.php");
                     } else {

@@ -1,6 +1,6 @@
 <html>
 <head>
-    <title> Music Manager</title>
+    <title>Showtime!</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
     <style>
         
@@ -43,7 +43,7 @@
 </head>
 <body>
     <div class="page-title">
-        <h1>Welcome to Music Manager!</h1>
+        <h1>Welcome to Showtime!</h1>
         <h3>Choose your mode</h3>
     </div>
     <br><br>

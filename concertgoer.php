@@ -3,22 +3,14 @@
 <!-- https://stackoverflow.com/questions/6833914/how-to-prevent-the-confirm-form-resubmission-dialog -->
 <html>
 <head>
-    <title>Concert Goer</title>
+    <title>ConcertGoer - Showtime!</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
     <link rel="stylesheet" href="css/concertgoer-style.css">
     <link rel="stylesheet" href="css/navbar-style.css">
     <link rel="stylesheet" href="css/input-style.css">
     <link rel="stylesheet" href="css/mainpage-style.css">
     <style>
-        input[type="text"] {
-            width: 20%;
-        }
-
-        input[type="number"] {
-            width: 100px;
-            text-align: right;
-        }
-
+        
         .search-by {
             margin: 20px;
             margin-left: 0px;
@@ -225,7 +217,7 @@ function handlePOSTRequest()
 
 <div class="navbar">
     <a href="landingpage.php">Home</a>
-    <a href="#">Purchased Tickets</a>
+    <a href="#purchased">Purchased Tickets</a>
     <a href="#search">Search for shows</a>
     <a href="#buy">Buy Tickets</a>
 </div>
@@ -236,8 +228,9 @@ function handlePOSTRequest()
     </div>
 
     <div class="section">
-        <h2 id="Purchased Tickets">Purchased Tickets</h2>
-        <form action="#" method="post">
+        <a class="anchor" id="purchased"></a>
+        <h2>Purchased Tickets</h2>
+        <form action="#purchased" method="post">
             <input type="hidden" name="userID" value=<?php echo $userID ?>>
             <input type="hidden" name="viewTicketsRequest">
             <button type="submit">View Tickets</button>
