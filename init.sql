@@ -319,15 +319,15 @@ INSERT INTO Venue
 VALUES ('101 Real Rd, Chicago, IL, USA', 'Real Ones', 40, 21);
 
 INSERT INTO ConcertGoer
-VALUES ('kahnsert123', 'thisismypassword', 'Kahn Sert', 'iloveconcerts@gmail.com', DATE '1990-01-03');
+VALUES ('kahnsert123', '$2y$10$wIp.TV.C7OWC5c9iu6XgbeUGbkFIg2.hvzUx46KztP9gCrcTzyrrW', 'Kahn Sert', 'iloveconcerts@gmail.com', DATE '1990-01-03');
 INSERT INTO ConcertGoer
-VALUES ('ILOVEMUSIC', 'anotherpassword', 'Micheal Joaquin', 'mikejoaq@gmail.com', NULL);
+VALUES ('ILOVEMUSIC', '$2y$10$AeZbAaCWbMOd5KUkttYhBuhWozMphK7UnD6zlg27wQdiUegjJhqTa', 'Micheal Joaquin', 'mikejoaq@gmail.com', NULL);
 INSERT INTO ConcertGoer
-VALUES ('mjisalive', 'abcdefg123***', 'Micheal Jackson', '123mjalive@gmail.com', DATE '1995-04-30');
+VALUES ('mjisalive', '$2y$10$8pHCEwXLvrOuEbRU9l6oyuP1zrCVzh8ohg4dzYIb9FGPHj..UhyPC', 'Micheal Jackson', '123mjalive@gmail.com', DATE '1995-04-30');
 INSERT INTO ConcertGoer
-VALUES ('kfln354', 'p@xqs12SPxZ', 'Kai Fakelastname', 'kaikaifakelastname@gmail.com', NULL);
+VALUES ('kfln354', '$2y$10$ewmx1RkUutWfDX5nWsSgCe5uwO2eJxF.Od/VWDOz9POl0myB58QD6', 'Kai Fakelastname', 'kaikaifakelastname@gmail.com', NULL);
 INSERT INTO ConcertGoer
-VALUES ('namefive', '5555555', 'Name Five', 'name5@gmail.com', DATE '2000-10-03');
+VALUES ('namefive', '$2y$10$Dhx9eALVaBZq4oUtPxI8SeMW9dJMA.IX0K30sf54Qyrs5Es934/6q', 'Name Five', 'name5@gmail.com', DATE '2000-10-03');
 
 INSERT INTO Show
 VALUES ('231 Oak Rd, Vancouver, BC, Canada', TIMESTAMP '2011-12-30 18:00:00', NULL, 'Arctic Monkeys', 'Coachella', DATE '2011-12-30');
