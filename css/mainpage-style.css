@@ -45,3 +45,12 @@ a.anchor {
 .section p {
     font-size: 18px;
 }
+
+input[type="text"] {
+    width: 20%;
+}
+
+input[type="number"] {
+    width: 100px;
+    text-align: right;
+}

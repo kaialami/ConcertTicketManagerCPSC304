@@ -8,6 +8,10 @@ input {
     margin-left: 0px;
 }
 
+input[type="radio"] {
+    width: auto;
+}
+
 button {
     padding: 10px;
     font-size: 14px; 
@@ -25,4 +29,6 @@ button:hover {
 
 label {
     font-size: 14px;
+    padding: 10px;
+    padding-left: 0px;
 }
