@@ -142,6 +142,13 @@
         <div class="page-title">
             <h1>Welcome!</h2>
         </div>
+        <div class="error-message">
+            <?php 
+                if (isset($_POST['loginUserRequest']) || isset($_POST['createUserRequest'])) {
+                    handlePOSTRequest();
+                }
+            ?>
+        </div>
         <div class="form-container">
             <div class="form">
                 <h1>Login as a ConcertGoer</h1>
@@ -166,13 +173,6 @@
                 </form>
                 <br>
             </div>
-        </div>
-        <div class="error-message">
-            <?php 
-                if (isset($_POST['loginUserRequest']) || isset($_POST['createUserRequest'])) {
-                    handlePOSTRequest();
-                }
-            ?>
         </div>
     </div>
            
