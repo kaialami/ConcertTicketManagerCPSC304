@@ -1,0 +1,50 @@
+body {
+    margin: 0;
+    text-align: left;
+    font-family: "Lato", sans-serif;
+}
+
+img {
+    width:200px;
+    height:200px;
+    margin: 15px;
+}
+
+p {
+    text-align: left;
+    font-size: 14px;
+}
+
+.main {
+    padding: 16px;
+    margin-top: 40px;
+}
+
+.form-container {
+    margin: auto;
+    padding: 20px;
+    display: table;
+    /* border: 2px solid red; */
+}
+
+.form {
+    display: table-cell;
+    padding: 20px 50px;
+    /* border: 2px solid black; */
+}
+
+.page-title {
+    margin: auto;
+    width: 50%;
+    text-align: center;
+}
+
+.page-title h1 {
+    font-size: 44px;
+}
+
+.error-message p {
+    margin: auto;
+    width: 50%;
+    text-align: center;
+}

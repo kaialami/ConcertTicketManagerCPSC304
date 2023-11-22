@@ -194,8 +194,8 @@
                 <h1>Login as a ConcertGoer</h1>
                 <form method="post" action="concertgoer-login.php">
                     <input type="hidden" id="loginUserRequest" name="loginUserRequest">
-                    <input type="text" name="userID" placeholder="Username"> <br /><br />
-                    <input type="text" name="pass" placeholder="Password"> <br /><br /> 
+                    <input type="text" name="userID" placeholder="Username"> <br />
+                    <input type="text" name="pass" placeholder="Password"> <br><br>
                     <button type="submit">Login</button>
                 </form>
             </div>
@@ -203,13 +203,13 @@
                 <h1>Need an account?</h1>
                 <form method="post" action="concertgoer-login.php">
                     <input type="hidden" id="createUserRequest" name="createUserRequest">
-                    <input type="text" name="newUserID" placeholder="Username"> <br /><br />
-                    <input type="text" name="newPass" placeholder="Password"> <br /><br />
-                    <input type="text" name="newGoerName" placeholder="Name"> <br /><br /> 
-                    <input type="email" name="newEmail" placeholder="Email"> <br /><br /> 
+                    <input type="text" name="newUserID" placeholder="Username"> <br />
+                    <input type="text" name="newPass" placeholder="Password"> <br />
+                    <input type="text" name="newGoerName" placeholder="Name"> <br /> 
+                    <input type="email" name="newEmail" placeholder="Email"> <br />
                     <label>Date of Birth (optional) </label><input type="date" name="newDOB"> <br /><br /> 
                     <!--// https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/date -->
-                    <button type="submit">Create</submit>
+                    <button type="submit">Create</button>
                 </form>
                 <br>
             </div>

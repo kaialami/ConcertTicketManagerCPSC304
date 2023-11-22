@@ -1,0 +1,32 @@
+input {
+    padding: 10px;
+    border: 1px solid black;
+    border-radius: 3px;
+    transition-duration: 100ms;
+    font-size: 14px;
+    margin: 10px;
+    margin-left: 0px;
+}
+
+button {
+    padding: 10px;
+    font-size: 14px; 
+    background-color: #fff;
+    /* border: 2px solid steelblue; */
+    /* color: steelblue; */
+    border-radius: 3px;
+    transition-duration: 100ms;
+    margin: 10px;
+    margin-left: 0;
+}
+
+button:hover {
+    /* background-color: steelblue; */
+    color: #fff;
+    cursor: pointer;
+    /* border-color: rgb(47, 92, 128); */
+}
+
+label {
+    font-size: 14px;
+}
