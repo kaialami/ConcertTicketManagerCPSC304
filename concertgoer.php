@@ -218,7 +218,7 @@ function handleSearchTicketsRequest()
 
     $venue = trim($venue);
 
-    if (sanitizeInput($venue)) {
+    if (sanitizeVenueInput($venue)) {
         if (!$date || !$time) {
             echo "Please fill out all fields.";
         } else {
