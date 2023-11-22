@@ -77,34 +77,47 @@
         ob_start();
         session_start();        
         $_SESSION['POST'] = $_POST;
-        
+
         function handleLoginUserRequest() {
+            //global $db_conn;
+
             $user = $_POST['userID'];
             $pass = $_POST['pass'];
             $user = trim($user);
             $pass = trim($pass);
-            
-            // NEEDS SANITIZING/HASHING
-            $retrievedPass = executePlainSQL("SELECT pass from ConcertGoer where userID = '" . $user . "'");
-            
-            //$fetchedUserID = oci_fetch_row($retrievedUserID);
-            $fetchedPass = oci_fetch_row($retrievedPass);
-            
-            if ($fetchedPass == false || $fetchedPass[0] != $pass) {
-                echo "<p>Cannot find an account with that username and/or password!</p>";
-            } else {
-                //https://stackoverflow.com/questions/18140270/how-to-write-html-code-inside-php-block
-                //https://stackoverflow.com/questions/4871942/how-to-redirect-to-another-page-using-php
-                echo "<p>What</p>";
-                header("Location: concertgoer.php");
-            }
 
-    
+            if (!sanitizeInput($user)) {
+                echo "<p>Special characters are not allowed / Input limit reached!</p>";
+            } else {
+                $retrievedPass = executePlainSQL("SELECT pass from ConcertGoer where userID = '" . $user . "'");
+
+                //$fetchedUserID = oci_fetch_row($retrievedUserID);
+                $fetchedPass = oci_fetch_row($retrievedPass);
+
+                $hash = password_hash($pass, PASSWORD_DEFAULT);
+
+                if (!$fetchedPass || !$hash || !password_verify($pass, $fetchedPass[0])) {
+                    echo "<p>Cannot find an account with that username and/or password!</p>";
+                } else {
+                    //https://stackoverflow.com/questions/18140270/how-to-write-html-code-inside-php-block
+                    //https://stackoverflow.com/questions/4871942/how-to-redirect-to-another-page-using-php
+
+
+//                if (password_needs_rehash($fetchedPass, PASSWORD_DEFAULT)) {
+//                    $newHash = password_hash($pass, PASSWORD_DEFAULT);
+//                    executePlainSQL("UPDATE ConcertGoer SET  pass == $newHash WHERE userID == $user");
+//                    oci_commit($db_conn);
+//                }
+                    // this might mess up, idk if we even need rehashing tbh so commented out. they said simple was fine
+                    echo "<p>What</p>";
+                    header("Location: concertgoer.php");
+                }
+            }
         }
-        
+
         function handleCreateUserRequest() {
             global $db_conn, $success;
-            
+
             $newUser = $_POST['newUserID'];
             $newPass = $_POST['newPass'];
             $newGoerName = $_POST['newGoerName'];
@@ -115,36 +128,42 @@
             } else {
                 $newDOB = "DATE '" . $newDOB . "'";
             }
-            
+
             $newUser = trim($newUser);
             $newPass = trim($newPass);
             $newGoerName = trim($newGoerName);
             $newEmail = trim($newEmail);
             $newDOB = trim($newDOB);
 
-            $retrievedUserID = executePlainSQL("SELECT userID from ConcertGoer where userID = '" . $newUser . "'");
-            $fetchedUserID = oci_fetch_row($retrievedUserID);
+            $newPassHashed = password_hash($newPass, PASSWORD_DEFAULT);
 
-            if ($fetchedUserID != false) {
-                echo "<p>An account with that username already exists!</p>";
+            if (!sanitizeInput($newUser) || !sanitizeInput($newEmail)) {
+                echo "<p>Special characters are not allowed / Input limit reached!</p>";
             } else {
-                executePlainSQL("INSERT INTO ConcertGoer VALUES  ('" . $newUser . "', '" . $newPass . "', '" . $newGoerName . "', '" . $newEmail . "', " . $newDOB . ")");
-                oci_commit($db_conn);
-                if ($success) {
-                    $_POST['userID'] = $_POST['newUserID'];
-                    $_POST['pass'] = $_POST['newPass'];
-                    $_SESSION['POST'] = $_POST;
-                    header("Location: concertgoer.php");
+                $retrievedUserID = executePlainSQL("SELECT userID from ConcertGoer where userID = '" . $newUser . "'");
+                $fetchedUserID = oci_fetch_row($retrievedUserID);
+                $retrievedEmail = executePlainSQL("SELECT email from ConcertGoer where email = '" . $newEmail . "'");
+                $fetchedEmail = oci_fetch_row($retrievedEmail);
+
+                if ($fetchedUserID) {
+                    echo "<p>An account with that username already exists!</p>";
+                } else if ($fetchedEmail)   {
+                    echo "<p>An account with that email already exists!</p>";
                 } else {
-                    echo "<p>Please enter a valid username, password, name and email.</p>";
-                    $success = true;
+                    executePlainSQL("INSERT INTO ConcertGoer VALUES  ('" . $newUser . "', '" . $newPassHashed . "', '" . $newGoerName . "', '" . $newEmail . "', " . $newDOB . ")");
+                    oci_commit($db_conn);
+                    if ($success) {
+                        $_POST['userID'] = $_POST['newUserID'];
+                        $_POST['pass'] = $_POST['newPass'];
+                        $_SESSION['POST'] = $_POST;
+                        header("Location: concertgoer.php");
+                    } else {
+                        echo "<p>Please enter a valid username, password, name and email.</p>";
+                        $success = true;
+                    }
                 }
             }
-            
-            
         }
-
-
         function handlePOSTRequest()
         {
             if (connectToDB()) {

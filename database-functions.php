@@ -93,4 +93,14 @@
         return $split;
     }
 
+    function sanitizeInput($input) {
+        if(preg_match("-([/!%$#*^&'\"()\[\]{}\-_=<>+~`]+)-", $input) || strchr($input, '\\') || strchr($input, '/')) {
+            return false;
+        } else if (mb_strlen($input, 'utf8') > 30){
+            return false;
+        } else {
+            return true;
+        }
+    }
+
 ?>
