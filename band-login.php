@@ -117,7 +117,7 @@
                     <h3>Every band needs a member!</h3>
                     <input type="text" name="memberName" placeholder="Name"> <br>
                     <label>Date of Birth<br><input type="date" name="memberDOB" placeholder="DOB"></label><br>
-                    <label><input id="musician" type="radio" name="role" value="musician">Musician </label><br>
+                    <label><input id="musician" type="radio" name="role" value="musician" checked=true>Musician </label><br>
                     <label><input id="manager" type="radio" name="role" value="manager">Manager </label><br>
                     <label><input id="technician" type="radio" name="role" value="technician">Technician </label><br>
                     <input id="attribute" type="text" name="attribute" placeholder="Instrument"> <br>
