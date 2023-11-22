@@ -11,3 +11,7 @@ button:hover {
     background-color: steelblue;
     border-color: rgb(47, 92, 128);
 }
+
+hr {
+    border: 1px solid steelblue;
+}

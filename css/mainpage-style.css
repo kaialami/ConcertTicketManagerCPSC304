@@ -1,0 +1,47 @@
+body {
+    margin: 0;
+    font-family: "Lato", sans-serif;
+}
+table {
+    text-align: left;
+}
+
+th, td {
+    padding-right: 25px;
+    color: black;
+    font-size: 18px;
+}
+
+th {
+    padding-bottom: 10px;
+}
+
+a.anchor {
+    top: -50px;
+    display: block;
+    position: relative;
+    visibility: hidden;
+}
+
+.main {
+    padding: 16px;
+    margin-top: 30px;
+}
+
+.page-title {
+    text-align: center;
+    padding: 20px;
+    font-size: 22px;
+}
+
+.section {
+    padding: 10px;
+}
+
+.section h2 {
+    font-size: 24px;
+}
+
+.section p {
+    font-size: 18px;
+}

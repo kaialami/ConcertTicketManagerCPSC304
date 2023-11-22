@@ -8,31 +8,8 @@
     <link rel="stylesheet" href="css/concertgoer-style.css">
     <link rel="stylesheet" href="css/navbar-style.css">
     <link rel="stylesheet" href="css/input-style.css">
+    <link rel="stylesheet" href="css/mainpage-style.css">
     <style>
-        body {
-            margin: 0;
-            font-family: "Lato", sans-serif;
-            color: steelblue;
-        }
-
-        hr {
-            border: 1px solid steelblue;
-        }
-        
-        table {
-            text-align: left;
-        }
-
-        th, td {
-            padding-right: 25px;
-            color: black;
-            font-size: 18px;
-        }
-
-        th {
-            padding-bottom: 10px;
-        }
-
         input[type="text"] {
             width: 20%;
         }
@@ -40,37 +17,6 @@
         input[type="number"] {
             width: 100px;
             text-align: right;
-        }
-
-
-        a.anchor {
-            top: -50px;
-            display: block;
-            position: relative;
-            visibility: hidden;
-        }
-
-        .main {
-            padding: 16px;
-            margin-top: 30px;
-        }
-
-        .page-title {
-            text-align: center;
-            padding: 20px;
-            font-size: 22px;
-        }
-
-        .section {
-            padding: 10px;
-        }
-
-        .section h2 {
-            font-size: 24px;
-        }
-
-        .section p {
-            font-size: 18px;
         }
 
         .search-by {
@@ -226,7 +172,7 @@ function handleSearchTicketsRequest()
 
     if (sanitizeVenueInput($venue)) {
         if (!$date || !$time) {
-            echo "Please fill out all fields.";
+            echo "<p>Please fill out all fields.</p><br><br>";
         } else {
             echo "<p>" . $venue . "@" . $date . " " . $time . "</p>";
             // more needed
@@ -241,7 +187,7 @@ function handlePurchaseTicketRequest() {
 
     if (sanitizeInput($idNum)) {
         // insert tuple
-        echo "<p>Ticket purchased.</p>";
+        echo "<p>Ticket purchased.</p><br><br>";
     } else {
         echo "<p>Special characters are not allowed / Input limit reached!</p>";
     }

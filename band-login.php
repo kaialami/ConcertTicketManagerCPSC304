@@ -6,22 +6,9 @@
     <link rel="stylesheet" href="css/login-style.css">
     <link rel="stylesheet" href="css/navbar-style.css">
     <link rel="stylesheet" href="css/input-style.css">
+    <link rel="stylesheet" href="css/band-style.css">
 
     <style>
-        body {
-            color: #ed7d31;
-        }    
-
-        button {
-            border: 2px solid #ed7d31;
-            color: #ed7d31;
-        }
-
-        button:hover {
-            background-color: #ed7d31;
-            border-color: #e66914;
-        }
-
         input {
             width: 70%;
         }
@@ -39,7 +26,6 @@
         }
 
         hr {
-            border: 1px solid #ed7d31;
             margin: 20px 0px;
         }
 
@@ -49,10 +35,6 @@
 
         #login {
             padding-right: 50px;
-        }
-
-        #create {
-            padding-left: 30px;
         }
 
 

@@ -1,0 +1,17 @@
+body {
+    color: #ed7d31;
+}    
+
+button {
+    border: 2px solid #ed7d31;
+    color: #ed7d31;
+}
+
+button:hover {
+    background-color: #ed7d31;
+    border-color: #e66914;
+}
+
+hr {
+    border: 1px solid #ed7d31;
+}
