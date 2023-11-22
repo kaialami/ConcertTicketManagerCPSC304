@@ -46,15 +46,32 @@
 
 
     // https://stackoverflow.com/questions/2447211/php-pass-post-variables-with-header
-    function handleLoginRequest()
-    {
-        header("Location: band.php");
+    function handleLoginRequest() {
+        $bandname = $_POST['bandName'];
+        $pass = $_POST['pass'];
+        $bandname = trim($bandname);
+        $pass = trim($pass);
+
+        if (!sanitizeInput($bandname)) {
+            echo "<p>Special characters are not allowed / Input limit reached!</p>";
+        } else {
+            $retrievedPass = executePlainSQL("SELECT pass from Band where bandname = '" . $bandname . "'");
+            $fetchedPass = oci_fetch_row($retrievedPass);
+            $hash = password_hash($pass, PASSWORD_DEFAULT);
+
+            if (!$fetchedPass || !$hash || !password_verify($pass, $fetchedPass[0])) {
+                echo "<p>Cannot find an account with that username and/or password!</p>";
+            } else {
+                $_POST['pass'] = "";
+                $_SESSION['POST'] = $_POST;
+                header("Location: band.php");
+            }
+        }
     }
 
-    function handlePOSTRequest() 
-    {
+    function handlePOSTRequest() {
         if (connectToDB()) {
-            if (array_key_exists("loginRequest", $_POST)) {
+            if (array_key_exists("loginBandRequest", $_POST)) {
                 handleLoginRequest();
             }
         }
@@ -73,11 +90,18 @@
         <div class="page-title">
             <h1>Welcome!</h1>
         </div>
+        <div class="error-message">
+            <?php 
+            if (isset($_POST['loginBandRequest']) || isset($_POST['createBandRequest'])) {
+                handlePOSTRequest();
+            }
+            ?>
+        </div>
         <div class="form-container">
             <div class="form">
                 <h1 id="login">Login as a Band</h1>
                 <form method="post">
-                    <input type="hidden" name="loginRequest">
+                    <input type="hidden" name="loginBandRequest">
                     <input type="text" name="bandName" placeholder="Band Name"> <br>
                     <input type="text" name="pass" placeholder="Password"> <br>
                     <button type="submit">Login</button>
@@ -86,7 +110,7 @@
             <div class="form">
                 <h1>Register your band</h1>
                 <form method="post">
-                    <input type="hidden" name="createRequest">
+                    <input type="hidden" name="createBandRequest">
                     <input type="text" name="bandName" placeholder="Band Name"> <br>
                     <input type="text" name="pass" placeholder="Password"> <br>
                     <hr>
@@ -102,44 +126,9 @@
             </div>
         </div>
         <br>
-        <div class="error-message">
-            <?php 
-            if (isset($_POST['loginRequest'])) {
-                handlePOSTRequest();
-            }
-            ?>
-        </div>
     </div>
 
-
-    <script>
-        // https://stackoverflow.com/questions/50065773/what-is-the-best-solution-to-avoid-inline-onclick-function
-
-        var musicianRadio = document.getElementById("musician");
-        var managerRadio = document.getElementById("manager");
-        var technicianRadio = document.getElementById("technician");
-        var attribute = document.getElementById("attribute");
-
-        musicianRadio.addEventListener("click", showInstrument);
-        managerRadio.addEventListener("click", hide);
-        technicianRadio.addEventListener("click", showSpecialty);
-
-
-        function showInstrument() {
-            attribute.style.visibility = "visible";
-            attribute.placeholder = "Instrument";
-        }
-
-        function showSpecialty() {
-            attribute.style.visibility = "visible";
-            attribute.placeholder = "Specialty";
-        }
-
-        function hide() {
-            attribute.style.visibility = "hidden";
-        }
-
-    </script>
+    <script src="scripts/bandmember.js"></script>
 
 </body>
 </html>
