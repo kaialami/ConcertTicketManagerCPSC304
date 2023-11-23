@@ -26,7 +26,7 @@
         }
 
         #attribute {
-            visibility: hidden;
+            visibility: visible;
         }
 
         #login {
@@ -69,10 +69,74 @@
         }
     }
 
+    function handleCreateRequest() {
+        global $db_conn, $success;
+
+        $bandname = trim($_POST['bandName']);
+        $pass = trim($_POST['pass']);
+        $membername = trim($_POST['memberName']);
+        $memberDOB = $_POST['memberDOB'];
+        $role = $_POST['role'];
+        $attribute = "na";
+        if ($role != "manager") {
+            $attribute = $_POST['attribute'];
+        }
+        
+
+        if (!$bandname || !$pass || !$membername || !$memberDOB || !$attribute) {
+            echo "<p>Please fill out all of the fields.</p>";
+        }
+        else if (!sanitizeInput($bandname) || !sanitizeInput($membername) || !sanitizeInput($attribute)) {
+            echo "<p>Special characters are not allowed / Input length limit reached!</p>";
+        }
+        else {
+            $retrievedBandname = executePlainSQL("SELECT bandname FROM Band WHERE bandname = '" . $bandname . "'");
+            $fetchedBandname = oci_fetch_row($retrievedBandname);
+
+            $retrievedMember = executePlainSQL("SELECT membername, memberDOB FROM BandMember WHERE membername = '" . $membername . "' AND memberDOB = DATE '" . $memberDOB . "'");
+            $fetchedMember = oci_fetch_row($retrievedMember);
+
+            if ($fetchedBandname) {
+                echo "<p>A band with that name is already registered!</p>";
+            } else {
+                $passHashed = password_hash($pass, PASSWORD_DEFAULT);
+                executePlainSQL("INSERT INTO Band VALUES('" . $bandname . "', NULL, NULL, '" . $passHashed . "')");
+                oci_commit($db_conn);
+
+                if (!$fetchedMember) {
+                    executePlainSQL("INSERT INTO BandMember VALUES('" . $membername . "', DATE '" . $memberDOB . "', NULL)");
+                    oci_commit($db_conn);
+                    if ($role == "manager") {
+                        executePlainSQL("INSERT INTO Manager VALUES ('" . $membername . "', DATE '" . $memberDOB . "')");
+                        oci_commit($db_conn);
+                    } else {
+                        executePlainSQL("INSERT INTO " . $role . " VALUES ('" . $membername . "', DATE '" . $memberDOB . "', '" . $attribute . "')");
+                        oci_commit($db_conn);
+                    }
+                }
+
+                executePlainSQL("INSERT INTO WorksFor VALUES('" . $membername . "', DATE '" . $memberDOB . "', '" . $bandname . "', 't')");
+                oci_commit($db_conn);
+
+                if ($success) {
+                    $_POST['pass'] = "";
+                    $_SESSION['POST'] = $_POST;
+                    header("Location: band.php");
+                } else {
+                    echo "<p>Please enter a valid band name, password and member information.</p>";
+                    $success = true;
+                }
+            }
+        }
+    }
+
     function handlePOSTRequest() {
         if (connectToDB()) {
             if (array_key_exists("loginBandRequest", $_POST)) {
                 handleLoginRequest();
+            }
+            if (array_key_exists("createBandRequest", $_POST)) {
+                handleCreateRequest();
             }
         }
 

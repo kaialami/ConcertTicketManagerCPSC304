@@ -14,7 +14,7 @@
         }
 
         #attribute {
-            visibility: hidden;
+            visibility: visible;
         }
         
     </style>
