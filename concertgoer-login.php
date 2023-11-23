@@ -90,7 +90,7 @@
             $newPassHashed = password_hash($newPass, PASSWORD_DEFAULT);
 
             if (!sanitizeInput($newUser) || !sanitizeInput($newEmail)) {
-                echo "<p>Special characters are not allowed / Input limit reached!</p>";
+                echo "<p>Special characters are not allowed / Input length limit reached!</p>";
             } else {
                 $retrievedUserID = executePlainSQL("SELECT userID from ConcertGoer where userID = '" . $newUser . "'");
                 $fetchedUserID = oci_fetch_row($retrievedUserID);
