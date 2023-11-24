@@ -187,10 +187,10 @@ function handleSearchTicketsRequest()
             echo "<p>" . $venue . " @ " . $date . " " . $time . "</p>";
             $result = executePlainSQL("SELECT * FROM TicketID WHERE 
                        regexp_like(venueaddress, '^" . $venue . "$', 'i') AND showDateTime = 
-                       TIMESTAMP '" . $date . " " . $time . ":00' AND userID = NULL");
+                       TIMESTAMP '" . $date . " " . $time . ":00' AND userID is NULL");
             $count = executePlainSQL("SELECT Count(*) FROM TicketID WHERE 
                        regexp_like(venueaddress, '^" . $venue . "$', 'i') AND showDateTime = 
-                       TIMESTAMP '" . $date . " " . $time . ":00' AND userID = NULL");
+                       TIMESTAMP '" . $date . " " . $time . ":00' AND userID is NULL");
             if ($rowCount = oci_fetch_row($count)) {
                 if ($rowCount[0] == "0") {
                     echo "<p>No tickets found.</p><br> <br> <br>";
