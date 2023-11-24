@@ -88,8 +88,9 @@
             $newDOB = trim($newDOB);
 
             $newPassHashed = password_hash($newPass, PASSWORD_DEFAULT);
-
-            if (!sanitizeInput($newUser) || !sanitizeInput($newEmail)) {
+            if (!$newUser || !$newPass || !$newGoerName || !$newEmail) {
+                echo "<p>Please fill out all fields.</p>";
+            } else if (!sanitizeInput($newUser) || !sanitizeInput($newEmail) || !sanitizeInput($newGoerName)) {
                 echo "<p>Special characters are not allowed / Input length limit reached!</p>";
             } else {
                 $retrievedUserID = executePlainSQL("SELECT userID from ConcertGoer where userID = '" . $newUser . "'");
