@@ -154,6 +154,24 @@ function handleSearchShowsEventRequest()
 
 }
 
+function printTicketQueryResults($result)
+{
+    echo "<table>";
+    echo "<tr>
+            <th>Ticket ID</th>
+            <th>Seat Num</th>
+            <th>Venue Address</th>
+            <th>Date</th>
+            <th>Time</th>
+        </tr>\n";
+
+    while ($row = OCI_Fetch_Array($result, OCI_BOTH)) {
+        $datetime = formatDateTime($row['SHOWDATETIME']);
+        echo "<tr><td>" . $row['TICKETID'] . "</td><td>" . $row['SEATNUM'] . "</td><td>" . $row['VENUEADDRESS'] . "</td><td>" . $datetime[0] . "</td><td>" . $datetime[1] . " " . $datetime[2] . "</td></tr>\n";
+    }
+    echo "</table><br><br>";
+}
+
 function handleSearchTicketsRequest()
 {
     $venue = $_POST['searchTicketsVenueRequest'];
@@ -166,8 +184,21 @@ function handleSearchTicketsRequest()
         if (!$date || !$time) {
             echo "<p>Please fill out all fields.</p><br><br>";
         } else {
-            echo "<p>" . $venue . "@" . $date . " " . $time . "</p>";
-            // more needed
+            echo "<p>" . $venue . " @ " . $date . " " . $time . "</p>";
+            $result = executePlainSQL("SELECT * FROM TicketID WHERE 
+                       regexp_like(venueaddress, '^" . $venue . "$', 'i') AND showDateTime = 
+                       TIMESTAMP '" . $date . " " . $time . ":00' AND userID = NULL");
+            $count = executePlainSQL("SELECT Count(*) FROM TicketID WHERE 
+                       regexp_like(venueaddress, '^" . $venue . "$', 'i') AND showDateTime = 
+                       TIMESTAMP '" . $date . " " . $time . ":00' AND userID = NULL");
+            if ($rowCount = oci_fetch_row($count)) {
+                if ($rowCount[0] == "0") {
+                    echo "<p>No tickets found.</p><br> <br> <br>";
+                } else {
+                    echo "";
+                    printTicketQueryResults($result);
+                }
+            }
         }
     } else {
         echo "<p>Special characters are not allowed / Input limit reached!</p><br> <br> <br>";

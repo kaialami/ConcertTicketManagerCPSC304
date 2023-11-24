@@ -352,6 +352,16 @@ INSERT INTO TicketID
 VALUES (4, 'L3401', 'mjisalive', '44 44th St, Toronto, ON, Canada', TIMESTAMP '2018-03-31 19:30:00');
 INSERT INTO TicketID
 VALUES (5, 'L1328', 'namefive', '101 Real Rd, Chicago, IL, USA', TIMESTAMP '2023-12-30 00:00:00');
+INSERT INTO TicketID
+VALUES (6, 'F1400', NULL, '231 Oak Rd, Vancouver, BC, Canada', TIMESTAMP '2011-12-30 18:00:00');
+INSERT INTO TicketID
+VALUES (7, 'F1401', NULL, '231 Oak Rd, Vancouver, BC, Canada', TIMESTAMP '2011-12-30 18:00:00');
+INSERT INTO TicketID
+VALUES (8, 'F1402', 'ILOVEMUSIC', '231 Oak Rd, Vancouver, BC, Canada', TIMESTAMP '2011-12-30 18:00:00');
+INSERT INTO TicketID
+VALUES (9, 'B2033', NULL, '231 Oak Rd, Vancouver, BC, Canada', TIMESTAMP '2011-12-30 18:00:00');
+INSERT INTO TicketID
+VALUES (10, 'F1404', NULL, '231 Oak Rd, Vancouver, BC, Canada', TIMESTAMP '2011-12-30 18:00:00');
 
 INSERT INTO TicketType 
 VALUES ('F1399', 'Floor');
@@ -363,6 +373,16 @@ INSERT INTO TicketType
 VALUES ('L3401', 'Lower');
 INSERT INTO TicketType 
 VALUES ('L1328', 'Lower');
+INSERT INTO TicketType
+VALUES ('F1400', 'Floor');
+INSERT INTO TicketType
+VALUES ('F1401', 'Floor');
+INSERT INTO TicketType
+VALUES ('F1402', 'Floor');
+INSERT INTO TicketType
+VALUES ('F1404', 'Floor');
+INSERT INTO TicketType
+VALUES ('B2033', 'Balcony');
 
 INSERT INTO TicketPrice
 VALUES ('F1399', '231 Oak Rd, Vancouver, BC, Canada', TIMESTAMP '2011-12-30 18:00:00', 100.00);
@@ -374,6 +394,16 @@ INSERT INTO TicketPrice
 VALUES ('L3401', '44 44th St, Toronto, ON, Canada', TIMESTAMP '2018-03-31 19:30:00', 7.98);
 INSERT INTO TicketPrice
 VALUES ('L1328', '101 Real Rd, Chicago, IL, USA', TIMESTAMP '2023-12-30 00:00:00', 154.22);
+INSERT INTO TicketPrice
+VALUES ('F1400', '231 Oak Rd, Vancouver, BC, Canada', TIMESTAMP '2011-12-30 18:00:00', 100.00);
+INSERT INTO TicketPrice
+VALUES ('F1401', '231 Oak Rd, Vancouver, BC, Canada', TIMESTAMP '2011-12-30 18:00:00', 100.00);
+INSERT INTO TicketPrice
+VALUES ('F1402', '231 Oak Rd, Vancouver, BC, Canada', TIMESTAMP '2011-12-30 18:00:00', 100.00);
+INSERT INTO TicketPrice
+VALUES ('F1404', '231 Oak Rd, Vancouver, BC, Canada', TIMESTAMP '2011-12-30 18:00:00', 100.00);
+INSERT INTO TicketPrice
+VALUES ('B2033', '231 Oak Rd, Vancouver, BC, Canada', TIMESTAMP '2011-12-30 18:00:00', 75.00);
 
 INSERT INTO WorksFor 
 VALUES ('Alex Turner', DATE '1991-02-03', 'Arctic Monkeys', 'y'); 
