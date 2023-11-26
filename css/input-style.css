@@ -32,3 +32,8 @@ label {
     padding: 10px;
     padding-left: 0px;
 }
+
+select {
+    padding: 10px;
+    margin-right: 10px;
+}
