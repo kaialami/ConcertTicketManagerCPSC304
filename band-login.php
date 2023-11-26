@@ -115,7 +115,7 @@
                     }
                 }
 
-                executePlainSQL("INSERT INTO WorksFor VALUES('" . $membername . "', DATE '" . $memberDOB . "', '" . $bandname . "', 't')");
+                executePlainSQL("INSERT INTO WorksFor VALUES('" . $membername . "', DATE '" . $memberDOB . "', '" . $bandname . "', 'y')");
                 oci_commit($db_conn);
 
                 if ($success) {
