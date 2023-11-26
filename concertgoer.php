@@ -30,6 +30,8 @@ $userID = $temp['userID'];
 
 $linebreaks = "<br> <br> <br> <br> <br>";
 
+// check if $userID exists as an entry in the DB, go back home if not
+checkLogin($userID, "c");
 
 
 function handleViewTicketsRequest()
@@ -212,7 +214,10 @@ function handlePurchaseTicketRequest() {
     if (preg_match("/^\d+$/", $idNum)) {
         $userCheck = executePlainSQL("SELECT userID FROM TicketID WHERE ticketID = $idNum");
         $userCheck = oci_fetch_row($userCheck);
-        if ($userCheck[0] == 0) {
+        if (!$userCheck) {
+            echo "<p>Invalid ID. Ticket does not exist.</p>";
+        
+        } else if ($userCheck[0] == 0) {
             executePlainSQL("UPDATE TicketID SET userID = '$userID' WHERE ticketID = $idNum");
             oci_commit($db_conn);
             if ($success) {
@@ -251,10 +256,13 @@ function handlePOSTRequest()
         if (array_key_exists("purchaseTicketRequest", $_POST)) {
             handlePurchaseTicketRequest();
         }
+    } else {
+        echo "<p>Error encountered - Please try again.</p>";
     }
 
     disconnectFromDB();
 }
+
 
 
 ?>

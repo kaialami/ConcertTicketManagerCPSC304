@@ -113,4 +113,28 @@ function sanitizeVenueInput($input) {
     }
 }
 
+// $cb is either "c" or "b" for concertgoer or band, respectively
+// if somehow user got to concergoer.php or band.php without a valid login, redirect to home page
+function checkLogin($login, $cb) {
+    $query;
+    if ($cb == "c") {
+        $query = "SELECT userID FROM ConcertGoer WHERE userID = '" . $login . "'";
+    } else if ($cb == "b") {
+        $query = "SELECT bandname FROM Band WHERE bandname = '" . $login ."'";
+    } else {
+        return;
+    }
+
+    if (connectToDB()) {
+        $getLogin = executePlainSQL($query);
+        $row = oci_fetch_row($getLogin);
+        if (!$row) {
+            disconnectFromDB();
+            header("Location: landingpage.php");
+        }
+    } 
+
+    disconnectFromDB();
+}
+
 ?>

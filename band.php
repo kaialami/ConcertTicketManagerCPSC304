@@ -28,6 +28,9 @@
     $temp = $_SESSION['POST'];
     $bandname = $temp['bandName'];
 
+    // check if $bandname exists as an entry in the DB, go back home if not
+    checkLogin($bandname, "b");
+
     ?>
 
     <div class="navbar">
