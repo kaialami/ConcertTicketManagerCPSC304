@@ -206,13 +206,27 @@ function handleSearchTicketsRequest()
 }
 
 function handlePurchaseTicketRequest() {
+    global $userID, $db_conn, $success;
     $idNum = $_POST['purchaseTicketRequest'];
 
-    if (sanitizeInput($idNum)) {
-        // insert tuple
-        echo "<p>Ticket purchased.</p><br><br>";
+    if (preg_match("/^\d+$/", $idNum)) {
+        $userCheck = executePlainSQL("SELECT userID FROM TicketID WHERE ticketID = $idNum");
+        $userCheck = oci_fetch_row($userCheck);
+        if ($userCheck[0] == 0) {
+            executePlainSQL("UPDATE TicketID SET userID = '$userID' WHERE ticketID = $idNum");
+            oci_commit($db_conn);
+            if ($success) {
+                echo "<p>Ticket purchased.</p><br><br>";
+            } else {
+                echo "<p>Error encountered purchasing.</p><br><br>";
+                $success = true;
+            }
+
+        } else {
+            echo "<p>This ticket is already purchased.</p><br><br>";
+        }
     } else {
-        echo "<p>Special characters are not allowed / Input limit reached!</p>";
+        echo "<p>Invalid ID.</p>";
     }
 }
 
@@ -340,7 +354,7 @@ function handlePOSTRequest()
         <p>Enter the ticket ID number you would like to purchase</p>
         <form action="#buy" method="post">
             <input type="hidden" name="userID" value=<?php echo $userID ?>>
-            <input type="number" name="purchaseTicketRequest" placeholder="ID Number">
+            <input type="number" min = "0" name="purchaseTicketRequest" placeholder="ID Number">
             <button type="submit">Purchase</button>
         </form>
 
