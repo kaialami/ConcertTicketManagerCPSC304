@@ -60,7 +60,7 @@
             $hash = password_hash($pass, PASSWORD_DEFAULT);
 
             if (!$fetchedPass || !$hash || !password_verify($pass, $fetchedPass[0])) {
-                echo "<p>Cannot find an account with that username and/or password!</p>";
+                echo "<p>Cannot find an account with that username and/or password!<br>Remember to use the correct capitalization!</p>";
             } else {
                 $_POST['pass'] = "";
                 $_SESSION['POST'] = $_POST;
