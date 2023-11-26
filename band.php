@@ -46,7 +46,7 @@
             echo "<th>Specialty</th>\n";
         } 
 
-        echo "<th>Active?</th></tr>";
+        echo "<th>Start Date</th><th>Active?</th></tr>";
 
         while ($row = OCI_Fetch_Array($result, OCI_BOTH)) {
             echo "<tr><td>" . $row['MEMBERNAME'] . "</td><td>" . $row['MEMBERDOB'] . "</td>";
@@ -55,7 +55,7 @@
             } else if ($type == "technician") {
                 echo "<td>" . $row['SPECIALTY'] . "</td>\n";
             }
-            echo "<td>" . $row['ACTIVE'] . "</td></tr>\n";
+            echo "<td>" . $row['STARTDATE'] . "</td><td>" . $row['ACTIVE'] . "</td></tr>\n";
         }
 
         echo "</table><br>";
@@ -65,9 +65,19 @@
     function handleViewMembersRequest() {
         global $bandname;
 
-        $musicians = executePlainSQL("SELECT m.memberName, m.memberDOB, m.instrument, w.active FROM Musician m, WorksFor w WHERE m.membername = w.membername AND m.memberDOB = w.memberDOB AND w.bandname = '" . $bandname ."'");
-        $managers = executePlainSQL("SELECT m.memberName, m.memberDOB, w.active FROM Manager m, WorksFor w WHERE m.membername = w.membername AND m.memberDOB = w.memberDOB AND w.bandname = '" . $bandname ."'");
-        $technicians = executePlainSQL("SELECT t.memberName, t.memberDOB, t.specialty, w.active FROM Technician t, WorksFor w WHERE t.membername = w.membername AND t.memberDOB = w.memberDOB AND w.bandname = '" . $bandname ."'");
+        $musicians = executePlainSQL("SELECT m.memberName, m.memberDOB, m.instrument, w.active, x.startdate FROM Musician m, WorksFor w, BandMember x
+                                    WHERE m.membername = w.membername AND m.memberDOB = w.memberDOB 
+                                    AND m.membername = x.membername AND m.memberDOB = x.memberDOB 
+                                    AND w.bandname = '" . $bandname ."'");
+        $managers = executePlainSQL("SELECT m.memberName, m.memberDOB, w.active, x.startdate FROM Manager m, WorksFor w, BandMember x 
+                                    WHERE m.membername = w.membername AND m.memberDOB = w.memberDOB 
+                                    AND m.membername = x.membername AND m.memberDOB = x.memberDOB 
+                                    AND w.bandname = '" . $bandname ."'");
+        $technicians = executePlainSQL("SELECT t.memberName, t.memberDOB, t.specialty, w.active, x.startdate FROM Technician t, WorksFor w, BandMember x 
+                                    WHERE t.membername = w.membername AND t.memberDOB = w.memberDOB 
+                                    AND t.membername = x.membername AND t.memberDOB = x.memberDOB 
+                                    AND w.bandname = '" . $bandname ."'");
+
         echo "<p>Musicians</p>";
         printMemberTable("musician", $musicians);
         echo "<p>Managers</p>";
