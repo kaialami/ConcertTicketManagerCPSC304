@@ -40,7 +40,6 @@
                 <th>Name</th>
                 <th>Date of Birth</th>\n";
 
-        $extra = "";
         if ($type == "musician") {
             echo "<th>Instrument</th>\n";
         } else if ($type == "technician") {
@@ -49,13 +48,14 @@
 
         echo "<th>Active?</th></tr>";
 
-        while ($row = oci_fetch_row($result)) {
-            echo "<tr><td>" . $row[0] . "</td><td>" . $row[1] . "</td>";
-            if ($type == "musician" || $type == "technician") {
-                echo "<td>" . $row[2] . "</td><td>" . $row[3] . "</td></tr>\n";
-            } else {
-                echo "<td>" . $row[2] . "</td></tr>\n";
+        while ($row = OCI_Fetch_Array($result, OCI_BOTH)) {
+            echo "<tr><td>" . $row['MEMBERNAME'] . "</td><td>" . $row['MEMBERDOB'] . "</td>";
+            if ($type == "musician") {
+                echo "<td>" . $row['INSTRUMENT'] . "</td>\n";
+            } else if ($type == "technician") {
+                echo "<td>" . $row['SPECIALTY'] . "</td>\n";
             }
+            echo "<td>" . $row['ACTIVE'] . "</td></tr>\n";
         }
 
         echo "</table><br>";
@@ -77,11 +77,27 @@
         
     }
 
+    function handleAddMemberRequest() {
+        // global $bandname;
+
+        // $membername = trim($_POST['memberName']);
+        // $memberDOB = $_POST['memberDOB'];
+        // $role = $_POST['role'];
+        // $attribute = "na";
+        // if ($role != "manager") {
+        //     $attribute = $_POST['attribute'];
+        // }
+
+    }
+
     function handlePOSTRequest() {
 
         if (connectToDB()) {
             if (array_key_exists("viewMembersRequest", $_POST)) {
                 handleViewMembersRequest();
+            }
+            if (array_key_exists("addMemberRequest", $_POST)) {
+                handleAddMemberRequest();
             }
         }
 
@@ -135,9 +151,17 @@
                 <input type="hidden" name="addMemberRequest">
                 <button type="submit" style="width: 60px;">Add</button>
             </form>
+
             <br>
-            <?php?>
+            <?php
+                if (isset($_POST['addMemberRequest'])) {
+                    handlePOSTRequest();
+                } else {
+                    echo $linebreaks;
+                }
+            ?>
             <br>
+
         </div>
         <hr>
         <div class="section">
