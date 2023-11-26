@@ -197,15 +197,15 @@ INSERT INTO RecordLabel
 VALUES 	('Atlantic Records', 2011);
 
 INSERT INTO Band
-VALUES ('Arctic Monkeys', DATE '2006-02-10', 'RCA Records', 'Arctic Monkeys');
+VALUES ('Arctic Monkeys', DATE '2006-02-10', 'RCA Records', '$2y$10$ygrphXkl85lC6b9q.jndYup.K/FqM/5IwVyTvVdmH1tkdBMDd/RUO');
 INSERT INTO Band
-VALUES ('Radiohead', DATE '1996-02-11', 'RCA Records', 'Radiohead');
+VALUES ('Radiohead', DATE '1996-02-11', 'RCA Records', '$2y$10$ipSmT78TYgLCA9r8rBlR4uUaiq4tqeNazb5v/5XLFDlxQMTgeeSRG');
 INSERT INTO Band
-VALUES ('Joji', DATE '2005-07-02', 'Universal Music', 'Joji');
+VALUES ('Joji', DATE '2005-07-02', 'Universal Music', '$2y$10$ATUUg7kneIkIPgHd9mhO5eakyrdUpnTQ9xkAVcg2B5W4a2ve9bDzq');
 INSERT INTO Band
-VALUES ('Kiss', DATE '1975-01-01', 'Warner Records', 'Kiss');
+VALUES ('Kiss', DATE '1975-01-01', 'Warner Records', '$2y$10$.lyiiKlo1NuX66ltS0/0LurSQ6H4B2RaJwZNWcrxauNk0lJYI2iF.');
 INSERT INTO Band
-VALUES ('Super Cool Indie Band', DATE '1920-04-05', NULL, 'Super Cool Indie Band');
+VALUES ('Super Cool Indie Band', DATE '1920-04-05', NULL, '$2y$10$UEivhvm/su9coQSCWVt0pOH5h3gfOZJtSPZrr0APSTJG4.9E3jpD2');
 
 INSERT INTO Song
 VALUES ('Do I Wanna Know?', 'Arctic Monkeys', '4:34', 'Indie Rock', 'James Ford', DATE  '2013-06-19');
