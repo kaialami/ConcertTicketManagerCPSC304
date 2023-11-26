@@ -124,6 +124,40 @@
         echo "<br><br>";
     }
 
+    function handleUpdateMemberRequest() {
+        global $bandname;
+        global $db_conn, $success;
+
+        $membername = trim($_POST['memberName']);
+        $memberDOB = $_POST['memberDOB'];
+        $startDate = $_POST['startDate'];
+        $active = $_POST['active'];
+
+        if (!$membername || !$memberDOB || !$startDate) {
+            echo "<p>Please fill out all of the fields.</p>";
+        }
+        else if (!sanitizeInput($membername)) {
+            echo "<p>Special characters are not allowed / Input length limit reached!</p>";
+        }
+        else {
+            $retrievedMember = executePlainSQL("SELECT memberName, memberDOB FROM BandMember WHERE memberName = '" . $membername . "' AND memberDOB = DATE '" . $memberDOB . "'");
+            $fetchedMember = oci_fetch_row($retrievedMember);
+            $retrievedWorksFor = executePlainSQL("SELECT memberName, memberDOB FROM WorksFor WHERE memberName = '" . $membername . "' AND memberDOB = DATE '" . $memberDOB . "' AND bandname = '" . $bandname . "'");
+            $fetchedWorksFor = oci_fetch_row($retrievedWorksFor);
+            
+            if (!$fetchedMember || !$fetchedWorksFor) {
+                echo "<p>Please enter the information of a real band member of <b>" . $bandname . "</b>.</p>";
+            } else {
+                executePlainSQL("UPDATE BandMember SET startDate = DATE '" . $startDate . "' WHERE memberName = '" . $membername . "' AND memberDOB = DATE '" . $memberDOB . "'");
+                oci_commit($db_conn);
+                executePlainSQL("UPDATE WorksFor SET active = '" . $active . "' WHERE memberName = '" . $membername . "' AND memberDOB = DATE '" . $memberDOB . "' AND bandname = '" . $bandname . "'");
+                oci_commit($db_conn);
+                echo "<p>Updated!</p>";
+            }
+        }
+
+    }
+
     function handlePOSTRequest() {
 
         if (connectToDB()) {
@@ -132,6 +166,9 @@
             }
             if (array_key_exists("addMemberRequest", $_POST)) {
                 handleAddMemberRequest();
+            }
+            if (array_key_exists("updateMemberRequest", $_POST)) {
+                handleUpdateMemberRequest();
             }
         }
 
@@ -185,8 +222,8 @@
                 <input type="hidden" name="addMemberRequest">
                 <button type="submit" style="width: 60px;">Add</button>
             </form>
-
             <br>
+
             <?php
                 if (isset($_POST['addMemberRequest'])) {
                     handlePOSTRequest();
@@ -194,8 +231,8 @@
                     echo $linebreaks;
                 }
             ?>
-            <br>
 
+            <br>
         </div>
         <hr>
         <div class="section">
@@ -207,13 +244,21 @@
                 <input type="date" name="memberDOB" placeholder="DOB"><br>
                 <p>Enter the person's starting date and status.</p>
                 <input type="date" name="startDate">
-                <label><input type="radio" name="active" value="true" checked=true>Active</label>
-                <label><input type="radio" name="active" value="false">Inactive</label>
+                <label><input type="radio" name="active" value="y" checked=true>Active</label>
+                <label><input type="radio" name="active" value="n">Inactive</label>
                 <input type="hidden" name="updateMemberRequest"><br>
                 <button type="submit">Update</button>
             </form>
             <br>
-            <?php?>
+
+            <?php
+                if (isset($_POST['updateMemberRequest'])) {
+                    handlePOSTRequest();
+                } else {
+                    echo $linebreaks;
+                }
+            ?>
+
             <br>
         </div>
         <hr>
