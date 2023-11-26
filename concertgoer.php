@@ -193,7 +193,7 @@ function handleSearchTicketsRequest()
                        TIMESTAMP '" . $date . " " . $time . ":00' AND userID is NULL");
             if ($rowCount = oci_fetch_row($count)) {
                 if ($rowCount[0] == "0") {
-                    echo "<p>No tickets found.</p><br> <br> <br>";
+                    echo "<p>No tickets found. Check your query (or maybe no tickets are available).</p><br> <br> <br>";
                 } else {
                     echo "";
                     printTicketQueryResults($result);
