@@ -78,16 +78,50 @@
     }
 
     function handleAddMemberRequest() {
-        // global $bandname;
+        global $bandname;
+        global $db_conn, $success;
 
-        // $membername = trim($_POST['memberName']);
-        // $memberDOB = $_POST['memberDOB'];
-        // $role = $_POST['role'];
-        // $attribute = "na";
-        // if ($role != "manager") {
-        //     $attribute = $_POST['attribute'];
-        // }
+        $membername = trim($_POST['memberName']);
+        $memberDOB = $_POST['memberDOB'];
+        $role = $_POST['role'];
+        $attribute = "na";
+        if ($role != "manager") {
+            $attribute = $_POST['attribute'];
+        }
 
+        if (!$membername || !$memberDOB || !$attribute) {
+            echo "<p>Please fill out all of the fields.</p>";
+        }
+        else if (!sanitizeInput($membername) || !sanitizeInput($attribute)) {
+            echo "<p>Special characters are not allowed / Input length limit reached!</p>";
+        }
+        else {
+            $retrievedMember = executePlainSQL("SELECT memberName, memberDOB FROM BandMember WHERE memberName = '" . $membername . "' AND memberDOB = DATE '" . $memberDOB . "'");
+            $fetchedMember = oci_fetch_row($retrievedMember);
+            if (!$fetchedMember) {
+                executePlainSQL("INSERT INTO BandMember VALUES('" . $membername . "', DATE '" . $memberDOB . "', NULL)");
+                oci_commit($db_conn);
+                if ($role == "manager") {
+                    executePlainSQL("INSERT INTO Manager VALUES ('" . $membername . "', DATE '" . $memberDOB . "')");
+                    oci_commit($db_conn);
+                } else {
+                    executePlainSQL("INSERT INTO " . $role . " VALUES ('" . $membername . "', DATE '" . $memberDOB . "', '" . $attribute . "')");
+                    oci_commit($db_conn);
+                }
+            }
+
+            $retrievedWorksFor = executePlainSQL("SELECT memberName, memberDOB FROM WorksFor WHERE memberName = '" . $membername . "' AND memberDOB = DATE '" . $memberDOB . "' AND bandname = '" . $bandname . "'");
+            $fetchedWorksFor = oci_fetch_row($retrievedWorksFor);
+            if (!$fetchedWorksFor) {
+                executePlainSQL("INSERT INTO WorksFor VALUES('" . $membername . "', DATE '" . $memberDOB . "', '" . $bandname . "', 'y')");
+                oci_commit($db_conn);
+                echo "<p>The " . $role . " <b>" . $membername . " (" . $memberDOB .")</b> is now a member of <b>" . $bandname . "</b>!</p>";
+            } else {
+                echo "<p><b>" . $membername . " (" . $memberDOB . ")</b> is already a member of <b>" . $bandname . "<b>!</p>";
+            }
+        }
+
+        echo "<br><br>";
     }
 
     function handlePOSTRequest() {
