@@ -16,6 +16,8 @@
         #attribute {
             visibility: visible;
         }
+
+        
         
     </style>
 </head>
@@ -165,7 +167,35 @@
                 echo "<p>Updated!</p>";
             }
         }
+    }
+    
+    function listRecordLabels() {
+        if (connectToDB()) {
+            $recordLabels = executePlainSQL("SELECT recordLabelName FROM RecordLabel");
+            while ($row = oci_fetch_row($recordLabels)) {
+                echo "<option value=\"" . $row[0] ."\">" . $row[0] . "</option>\n";
+            }
+        }
+        
+        disconnectFromDB();
+    }
 
+    function handleRecordLabelRequest() {
+        global $bandname;
+        global $db_conn;
+
+        $recordlabel = $_POST['recordlabel'];
+        if ($recordlabel == "NULL") {
+            executePlainSQL("UPDATE Band SET recordLabelName = NULL WHERE bandname = '" . $bandname . "'");
+            oci_commit($db_conn);
+            echo "<p>Updated! <b>" . $bandname . "</b> is not partnered with a Record Label.</p>";
+        } else {
+            executePlainSQL("UPDATE Band SET recordLabelName = '" . $recordlabel . "' WHERE bandname = '" . $bandname . "'");
+            oci_commit($db_conn);
+            echo "<p>Updated! <b>" . $bandname . "</b> is partnered with <i>" . $recordlabel . ".</i></p>";
+        }
+
+        echo "<br><br>";
     }
 
     function handlePOSTRequest() {
@@ -180,6 +210,9 @@
             if (array_key_exists("updateMemberRequest", $_POST)) {
                 handleUpdateMemberRequest();
             }
+            if (array_key_exists("recordLabelRequest", $_POST)) {
+                handleRecordLabelRequest();
+            }
         }
 
         disconnectFromDB();
@@ -192,6 +225,7 @@
         <a href="#view-members">View Members</a>
         <a href="#add-member">Add Members</a>
         <a href="#update-member">Update Members</a>
+        <a href="#record-label">Record Label</a>
         <a href="#book-show">Book a Show</a>
     </div>
 
@@ -270,6 +304,31 @@
             ?>
 
             <br>
+        </div>
+        <hr>
+        <div class="section">
+            <a class="anchor" id="record-label"></a>
+            <h2>Record Label</h2>
+            <form action="#record-label" method="post">
+                <p>Select from the list of available Record Labels that your band is partnered with.</p>
+                <select name="recordlabel">
+                    <option value="NULL">None</option>
+                    <?php listRecordLabels() ?>
+                </select>
+                <input type="hidden" name="recordLabelRequest">
+                <button type="submit">Update</button>
+            </form>
+        <br>
+
+        <?php
+            if (isset($_POST['recordLabelRequest'])) {
+                handlePOSTRequest();
+            } else {
+                echo $linebreaks;
+            }
+        ?>
+
+        <br>
         </div>
         <hr>
         <div class="section">
