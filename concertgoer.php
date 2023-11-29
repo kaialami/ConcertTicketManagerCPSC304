@@ -460,7 +460,7 @@ function handlePOSTRequest()
         <br>
     </div>
     <hr>
-    <div class="">
+    <div class="section">
         <a class="anchor" id="venue-pricing"></a>
         <h2>Venue Pricing</h2>
         <p>
