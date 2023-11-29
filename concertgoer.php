@@ -16,6 +16,18 @@
             margin-left: 0px;
         }
 
+        #confirm-delete {
+            visibility: hidden;
+            color: red;
+            border: 2px solid red
+        }
+
+        #confirm-delete:hover {
+            color: #fff;
+            background-color: red;
+            border-color: red;
+        }
+
         
     </style>
 
@@ -24,6 +36,7 @@
 <?php
 include_once("database-functions.php");
 
+ob_start();
 session_start();
 $temp = $_SESSION['POST'];
 $userID = $temp['userID'];
@@ -238,6 +251,40 @@ function handlePurchaseTicketRequest() {
     }
 }
 
+function handleDeleteAccountRequest() {
+    global $userID, $success, $db_conn;
+    $usernameDelete = trim($_POST['usernameDelete']);
+    $passwordDelete = trim($_POST['passwordDelete']);
+
+    if (!$usernameDelete || !$passwordDelete) {
+        echo "<p>Please fill out all the fields</p><br><br>";
+    } 
+    else if (!sanitizeInput($usernameDelete) || !sanitizeInput($passwordDelete)) {
+        echo "<p>Special characters are not allowed / Input length limit reached!</p>";
+    }
+    else if ($userID != $usernameDelete) {
+        echo "<p>Invalid username. Please input your complete username. Remember to check your capitals!</p><br><br>";
+    }
+    else {
+        $retrievedUser = executePlainSQL("SELECT userID, pass FROM ConcertGoer WHERE userID = '" . $usernameDelete . "'");
+        $row = OCI_Fetch_Array($retrievedUser, OCI_BOTH);
+        if (!$row) {
+            echo "<p>Error in attempting account deletion.</p><br><br>";
+        } else if (!password_verify($passwordDelete, $row['PASS'])) {
+            echo "<p>Invalid password. Please input your complete password. Remember to check your capitals!</p><br><br>";
+        } else {
+            executePlainSQL("DELETE FROM ConcertGoer WHERE userID = '" . $usernameDelete . "'");
+            oci_commit($db_conn);
+            if ($success) {
+                header("Location: landingpage.php");
+            } else {
+                echo "<p>Error in attempting account deletion.</p><br><br>";
+                $success = true;
+            }
+        }
+    }
+}
+
 function handlePOSTRequest()
 {
     if (connectToDB()) {
@@ -259,6 +306,9 @@ function handlePOSTRequest()
         if (array_key_exists("purchaseTicketRequest", $_POST)) {
             handlePurchaseTicketRequest();
         }
+        if (array_key_exists("deleteAccountRequest", $_POST)) {
+            handleDeleteAccountRequest();
+        }
     } else {
         echo "<p>Error encountered - Please try again.</p>";
     }
@@ -276,6 +326,7 @@ function handlePOSTRequest()
     <a href="#purchased">Purchased Tickets</a>
     <a href="#search">Search for shows</a>
     <a href="#buy">Buy Tickets</a>
+    <a href="#delete-user">Delete Account</a>
 </div>
 
 <div class="main">
@@ -381,8 +432,36 @@ function handlePOSTRequest()
         
         <br>
     </div>
+    <hr>
+    <div class="section">
+        <a class="anchor" id="delete-user"></a>
+        <h2>Delete Your Account</h2>
+        <p>
+            <b style="color: red;">DANGER: </b>Deleting your account is irreversible. You will lose ownership of all of your current tickets.
+            <br>Only delete your account if you are absolutely sure!
+        </p>
+        <p>Enter your username and password to confirm account deletion.<br>Upon successful deletion, you will be redirected to the home page.</p>
+        <form action="#delete-user" method="post">
+            <input type="hidden" name="userID" value=<?php echo $userID ?>>
+            <input type="hidden" name="deleteAccountRequest">
+            <input type="text" name="usernameDelete" placeholder="Username"><br>
+            <input type="text" name="passwordDelete" placeholder="Password"><br>
+            <button type="button" id="delete">Delete</button><br>
+            <button type="submit" id="confirm-delete">Are you 100% sure??</button>
+        </form>
+        <br>
+        <?php
+            if (isset($_POST['deleteAccountRequest'])) {
+                handlePOSTRequest();
+            } else {
+                echo $linebreaks;
+            }
+        ?>
+        <br>
+    </div>
 </div>
 
+<script src="scripts/delete-user.js"></script>
 
 </body>
 </html>
