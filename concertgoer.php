@@ -165,11 +165,12 @@ function printTicketQueryResults($result)
             <th>Venue Address</th>
             <th>Date</th>
             <th>Time</th>
+            <th>Price</th>
         </tr>\n";
 
     while ($row = OCI_Fetch_Array($result, OCI_BOTH)) {
         $datetime = formatDateTime($row['SHOWDATETIME']);
-        echo "<tr><td>" . $row['TICKETID'] . "</td><td>" . $row['SEATNUM'] . "</td><td>" . $row['VENUEADDRESS'] . "</td><td>" . $datetime[0] . "</td><td>" . $datetime[1] . " " . $datetime[2] . "</td></tr>\n";
+        echo "<tr><td>" . $row['TICKETID'] . "</td><td>" . $row['SEATNUM'] . "</td><td>" . $row['VENUEADDRESS'] . "</td><td>" . $datetime[0] . "</td><td>" . $datetime[1] . " " . $datetime[2] . "</td><td>$" . $row['PRICE'] . "</td></tr>\n";
     }
     echo "</table><br><br>";
 }
@@ -187,12 +188,14 @@ function handleSearchTicketsRequest()
             echo "<p>Please fill out all fields.</p><br><br>";
         } else {
             echo "<p>" . $venue . " @ " . $date . " " . $time . "</p>";
-            $result = executePlainSQL("SELECT * FROM TicketID WHERE 
-                       regexp_like(venueaddress, '^" . $venue . "$', 'i') AND showDateTime = 
-                       TIMESTAMP '" . $date . " " . $time . ":00' AND userID is NULL");
-            $count = executePlainSQL("SELECT Count(*) FROM TicketID WHERE 
-                       regexp_like(venueaddress, '^" . $venue . "$', 'i') AND showDateTime = 
-                       TIMESTAMP '" . $date . " " . $time . ":00' AND userID is NULL");
+            $result = executePlainSQL("SELECT i.ticketid, i.seatnum, i.venueaddress, i.showdatetime, p.price FROM TicketID i, TicketPrice p WHERE 
+                       regexp_like(i.venueaddress, '^" . $venue . "$', 'i') AND i.showDateTime = 
+                       TIMESTAMP '" . $date . " " . $time . ":00' AND i.userID is NULL AND 
+                       i.seatnum = p.seatnum AND i.venueaddress = p.venueaddress AND i.showdatetime = p.showdatetime");
+            $count = executePlainSQL("SELECT Count(*) FROM TicketID i, TicketPrice p WHERE 
+                       regexp_like(i.venueaddress, '^" . $venue . "$', 'i') AND i.showDateTime = 
+                       TIMESTAMP '" . $date . " " . $time . ":00' AND i.userID is NULL AND 
+                       i.seatnum = p.seatnum AND i.venueaddress = p.venueaddress AND i.showdatetime = p.showdatetime");
             if ($rowCount = oci_fetch_row($count)) {
                 if ($rowCount[0] == "0") {
                     echo "<p>No tickets found. Check your query (or maybe no tickets are available).</p><br> <br> <br>";
