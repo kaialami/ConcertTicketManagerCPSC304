@@ -93,6 +93,17 @@
         return $split;
     }
 
+    // takes $time = "xx:xx" in 12-hour format and adds 12 hours to make it PM in 24-hour format
+    function to24($time) {
+        $split = explode(":", $time);
+        $hourInt = intval($split[0]);
+        $hourInt = $hourInt + 12;
+        if ($hourInt == 24) {
+            $hourInt = "00";
+        }
+        return $hourInt . ":" . $split[1];
+    }
+
     function sanitizeInput($input) {
         if(preg_match("-([/!%$#*^&'\"()\[\]{}\-_=<>+~`]+)-", $input) || strchr($input, '\\') || strchr($input, '/')) {
             return false;
