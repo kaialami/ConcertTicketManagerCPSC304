@@ -26,6 +26,7 @@
     <?php
     include_once("database-functions.php");
 
+    ob_start();
     session_start();
     $temp = $_SESSION['POST'];
     $bandname = $temp['bandName'];
@@ -198,6 +199,117 @@
         echo "<br><br>";
     }
 
+    function handleViewSongsRequest() {
+        // query for songs by band
+    }
+
+    function handleAddSongRequest() {
+        // add new song tuple if possible
+    }
+
+
+    function listVenues() {
+        // list all venues in Venue table
+        // can also look at listShows() below
+        // important: connectToDB() and disconnectToDB() must be used
+        echo "<option value=\"placeholder\">Placeholder address - Look at recordlabel to see how to do it</option>";
+    }
+
+    function listSongs() {
+        // same idea as listVenues()
+        // list all of this band's songs
+        echo "<option value=\"bbbbb\">Song</option>";
+    }
+
+    function listEvents() {
+        // same idea again
+        // list all events in EventTable
+        echo "<option value=\"bbbbb\">Event</option>";
+    }
+
+    function listShows() {
+        global $bandname;
+        if (connectToDB()) {
+            $shows = executePlainSQL("SELECT venueAddress, showDateTime FROM Show WHERE bandname = '" . $bandname . "'");
+            while ($row = OCI_Fetch_Array($shows, OCI_BOTH)) {
+                $datetime = formatDateTime($row['SHOWDATETIME']);
+                $date = $datetime[0];
+                $time = $datetime[1];
+                $time24 = $time;
+                if ((substr($time, 0, 2) == "12" && $datetime[2] == "AM") || $datetime[2] == "PM") {
+                    $time24 = to24($time);
+                } 
+                echo "<option value=\"" . $row['VENUEADDRESS'] . " " . $time24 . "\">" . $row['VENUEADDRESS'] . "@" . $time . " " . $datetime[2] . "</option>\n";
+            }
+        }
+
+        disconnectFromDB();
+    }
+
+    function handleBookShowRequest() {
+        // big function here
+        // if all inputs are good (sanitize, required are not null), add to
+        //    - Show
+        //    - Books
+        //    - PlayedIn
+        // handle insert errors
+        // look at handleUpdateMemberRequest() for general flow of handling errors
+    }
+
+    function handleViewTicketsRequest() {
+        global $bandname, $db_conn, $success;
+
+        executePlainSQL("CREATE VIEW Available(venueAddress, showDateTime, countAvailable) AS
+                    SELECT s.venueAddress, s.showDateTime, Count(*) FROM Show s, TicketID t WHERE 
+                    s.bandname = '" . $bandname . "' AND s.venueaddress = t.venueaddress AND s.showdatetime = t.showdatetime AND userID is NULL
+                    GROUP BY s.venueAddress, s.showDateTime");
+                    
+        executePlainSQL("CREATE VIEW AllTickets(venueAddress, showDateTime, countAll) AS
+                    SELECT s.venueAddress, s.showDateTime, Count(*) FROM Show s, TicketID t WHERE 
+                    s.bandname = '" . $bandname . "' AND s.venueaddress = t.venueaddress AND s.showdatetime = t.showdatetime 
+                    GROUP BY s.venueAddress, s.showDateTime");
+            
+        $result = executePlainSQL("SELECT venueaddress, showdatetime, countAvailable, countAll 
+                    FROM AllTickets a NATURAL LEFT OUTER JOIN Available b");
+        
+        echo "<table>\n";
+        echo "<tr>
+                <th>Venue Address</th>
+                <th>Date</th>
+                <th>Time</th>
+                <th>Unpurchased</th>
+                <th>Total</th>
+              </tr>\n";
+        
+        while ($row = OCI_Fetch_Array($result, OCI_BOTH)) {
+            $datetime = formatDateTime($row['SHOWDATETIME']);
+            $available = $row['COUNTAVAILABLE'];
+            if (!$available) {
+                $available = 0;
+            }
+            echo "<tr>
+                    <td>" . $row['VENUEADDRESS'] . "</td>
+                    <td>" . $datetime[0] . "</td>
+                    <td>" . $datetime[1] . " " . $datetime[2] . "</td>
+                    <td>" . $available . "</td>
+                    <td>" . $row['COUNTALL'] . "</td>
+                  </tr>\n";
+        }
+
+        echo "</table><br><br>";
+        
+        executePlainSQL("DROP VIEW Available");
+        executePlainSQL("DROP VIEW AllTickets");
+    }
+
+    function handleCreateTicketsRequest() {
+        // dont forget to split $_POST['showVenueDateTime'] into the 2 parts to identify Show
+        //      - prob use explode("@", ...)
+        // concertgoer.php has example on how to query using TIMESTAMP in handleSearchTicketsRequest()
+        // also remember to add to all 3 Ticket tables
+        //
+    }
+
     function handlePOSTRequest() {
 
         if (connectToDB()) {
@@ -213,6 +325,21 @@
             if (array_key_exists("recordLabelRequest", $_POST)) {
                 handleRecordLabelRequest();
             }
+            if (array_key_exists("viewSongsRequest", $_POST)) {
+                handleViewSongsRequest();
+            }
+            if (array_key_exists("addSongRequest", $_POST)) {
+                handleAddSongRequest();
+            }
+            if (array_key_exists("bookShowRequest", $_POST)) {
+                handleBookShowRequest();
+            }
+            if (array_key_exists("viewTicketsRequest", $_POST)) {
+                handleViewTicketsRequest();
+            }
+            if (array_key_exists("createTicketsRequest", $_POST)) {
+                handleCreateTicketsRequest();
+            }
         }
 
         disconnectFromDB();
@@ -226,7 +353,9 @@
         <a href="#add-member">Add Members</a>
         <a href="#update-member">Update Members</a>
         <a href="#record-label">Record Label</a>
-        <a href="#book-show">Book a Show</a>
+        <a href="#songs">Songs</a>
+        <a href="#book-show">Book Show</a>
+        <a href="#tickets">Tickets</a>
     </div>
 
     <div class="main">
@@ -332,9 +461,132 @@
         </div>
         <hr>
         <div class="section">
+            <a class="anchor" id="songs"></a>
+            <h2>Manage Songs</h2>
+            <p>View your band's songs.</p>
+            <form action="#songs" method="post">
+                <input type="hidden" name="viewSongsRequest">
+                <button type="submit">View</button>
+            </form>
+            <br>
+            <p>Add a new song to your discography.</p>
+            <form action="#songs" method="post">
+                <input type="text" name="songName" placeholder="Song Name">
+                <input type="text" name="length" placeholder="Length (e.g. 3:24)" style="width: 10%;"><br>
+                <p>Optional information:</p>
+                <input type="text" name="genre" placeholder="Genre">
+                <input type="text" name="producer" placeholder="Producer Name"><br>
+                <label>Date Created<br><input type="date" name="date"></label>
+                <input type="hidden" name="addSongRequest">
+                <button type="submit">Add Song</button>
+            </form>
+            <br>
+
+            <?php
+                if (isset($_POST['viewSongsRequest']) || isset($_POST['addSongRequest'])) {
+                    handlePOSTRequest();
+                } else {
+                    echo $linebreaks;
+                }
+            ?>
+
+            <br>
+        </div>
+        <hr>
+        <div class="section">
             <a class="anchor" id="book-show"></a>
             <h2>Book a Show</h2>
+            <p>
+                Select a venue and a date and time for your show. <br>
+                Book under one of your band's manager's name and date of birth.
+            </p>
+            <form action="#book-show" method="post">
+                <p>Venue, Date and Time:</p>
+                <select name="venue">
+                    <?php listVenues() ?>
+                </select>
+                <input type="date" name="showDate">
+                <input type="time" name="showTime">
+                <br>
+                <p>Manager Information:</p>
+                <input type="text" name="managerName" placeholder="Manager Name">
+                <input type="date" name="managerDOB">
+                <br>
+                <p>Select a song to perform at this show.</p>
+                <select name="song">
+                    <?php listSongs() ?>
+                </select>
+                <br>
+                <p>Optional information:</p>
+                <input type="text" name="showName" placeholder="Show Name">
+                <br>
+                <label>
+                    Event name and date<br>
+                    <select name="eventName">
+                        <?php listEvents() ?>
+                    </select>
+                    <input type="date" name="eventDate">
+                </label>
+                <br>
+                <input type="hidden" name="bookShowRequest">
+                <button type="submit">Book Show</button>
+            </form>
+            <br>
+
+            <?php
+                if (isset($_POST['bookShowRequest'])) {
+                    handlePOSTRequest();
+                } else {
+                    echo $linebreaks;
+                }
+            ?>
+
+            <br>
         </div>
+        <hr>
+        <div class="section">
+            <a class="anchor" id="tickets"></a>
+            <h2>Manage Tickets</h2>
+            <p>View how many tickets have been sold for your shows.</p>
+            <form action="#tickets" method="post">
+                <input type="hidden" name="viewTicketsRequest">
+                <button type="submit">View</button>
+            </form>
+            <br>
+            <p>
+                Create tickets for a show.<br>
+                Select a number of tickets to make, the type of ticket, and the price of each.
+            </p>
+            <form action="#tickets" method="post">
+                <select name="showVenueDateTime">
+                    <?php listShows() ?>
+                </select>
+                <br>
+                <input type="number" name="number" placeholder="How many?">
+                <select name="type">
+                    <option value="Floor">Floor</option>
+                    <option value="Balcony">Balcony</option>
+                    <option value="Upper">Upper</option>
+                    <option value="Lower">Lower</option>
+                </select>
+                <input type="number" name="price" placeholder="Price ($)">
+                <br>
+                <input type="hidden" name="createTicketsRequest">
+                <button type="submit">Create Tickets</button>
+            </form>
+            <br>
+
+            <?php
+                if (isset($_POST['viewTicketsRequest']) || isset($_POST['createTicketsRequest'])) {
+                    handlePOSTRequest();
+                } else {
+                    echo $linebreaks;
+                }
+            ?>
+
+            <br>
+        </div>
+        <hr>
     </div>
 
     <script src="scripts/bandmember.js"></script>
