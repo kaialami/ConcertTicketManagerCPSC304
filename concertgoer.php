@@ -285,6 +285,29 @@ function handleDeleteAccountRequest() {
     }
 }
 
+function handleCalculateAvgRequest() {
+    $venue_averages = executePlainSQL("SELECT venueAddress, AVG(price) FROM TicketPrice GROUP BY venueAddress");
+
+    if ($venue_averages[0] == "0") {
+        echo "<p>Error encountered - no tickets exist.</p><br> <br> <br>";
+    } else {
+        echo "<table>";
+        echo "<tr>
+                    <th>Venue Address</th>
+                    <th>Average Price</th>
+                </tr>\n";
+
+//        $row = OCI_Fetch_Array($venue_averages, OCI_BOTH);
+//        echo "<tr><td>" . $row[0] . "</td><td>" . $row[1] . "</td></tr>\n";
+
+        while ($row = OCI_Fetch_Array($venue_averages, OCI_BOTH)) {
+            echo "<tr><td>" . $row['VENUEADDRESS'] . "</td><td>" . ceil($row['AVG(PRICE)'] * 100)/100 . "</td></tr>\n";
+        }
+
+        echo "</table><br><br>";
+    }
+}
+
 function handlePOSTRequest()
 {
     if (connectToDB()) {
@@ -309,6 +332,9 @@ function handlePOSTRequest()
         if (array_key_exists("deleteAccountRequest", $_POST)) {
             handleDeleteAccountRequest();
         }
+        if (array_key_exists("calculateAvgRequest", $_POST)) {
+            handleCalculateAvgRequest();
+        }
     } else {
         echo "<p>Error encountered - Please try again.</p>";
     }
@@ -326,6 +352,7 @@ function handlePOSTRequest()
     <a href="#purchased">Purchased Tickets</a>
     <a href="#search">Search for shows</a>
     <a href="#buy">Buy Tickets</a>
+    <a href="#venue-pricing">Venue Pricing</a>
     <a href="#delete-user">Delete Account</a>
 </div>
 
@@ -433,6 +460,27 @@ function handlePOSTRequest()
         <br>
     </div>
     <hr>
+    <div class="">
+        <a class="anchor" id="venue-pricing"></a>
+        <h2>Venue Pricing</h2>
+        <p>
+            Calculate the average ticket price per venue.
+        </p>
+        <form action="#venue-pricing" method="post">
+            <input type="hidden" name="userID" value=<?php echo $userID ?>>
+            <input type="hidden" name="calculateAvgRequest">
+            <button type="submit">Calculate</button>
+        </form>
+        <br>
+        <?php
+        if (isset($_POST['calculateAvgRequest'])) {
+            handlePOSTRequest();
+        } else {
+            echo $linebreaks;
+        }
+        ?>
+        <br>
+    </div>
     <div class="section">
         <a class="anchor" id="delete-user"></a>
         <h2>Delete Your Account</h2>
