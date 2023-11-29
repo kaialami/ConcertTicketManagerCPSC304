@@ -212,19 +212,49 @@
         // list all venues in Venue table
         // can also look at listShows() below
         // important: connectToDB() and disconnectToDB() must be used
-        echo "<option value=\"placeholder\">Placeholder address - Look at recordlabel to see how to do it</option>";
+        //echo "<option value=\"placeholder\">Placeholder address - Look at recordlabel to see how to do it</option>";
+
+        if (connectToDB()) {
+            $venues = executePlainSQL("SELECT venueAddress, venueName FROM Venue");
+            while ($row = oci_fetch_row($venues)) {
+                echo "<option value=\"" . $row[0] ."\">" . $row[0] . "</option>\n";
+            }
+        }
+        // Callie todo, change to also show venue name?
+        
+        disconnectFromDB();
     }
 
     function listSongs() {
         // same idea as listVenues()
         // list all of this band's songs
-        echo "<option value=\"bbbbb\">Song</option>";
+        //echo "<option value=\"bbbbb\">Song</option>";
+
+        global $bandname;
+        if (connectToDB()) {
+            $songs = executePlainSQL("SELECT songName FROM Song WHERE bandname = '" . $bandname . "'");
+            while ($row = oci_fetch_row($songs)) {
+                echo "<option value=\"" . $row[0] ."\">" . $row[0] . "</option>\n";
+            }
+        }
+        
+        disconnectFromDB();
     }
 
     function listEvents() {
         // same idea again
         // list all events in EventTable
-        echo "<option value=\"bbbbb\">Event</option>";
+        
+        if (connectToDB()) {
+            $events = executePlainSQL("SELECT eventName FROM EventTable");
+            while ($row = oci_fetch_row($events)) {
+                echo "<option value=\"" . $row[0] ."\">" . $row[0] . "</option>\n";
+            }
+        }
+        
+        //Callie todo: maybe revise for city/date
+
+        disconnectFromDB();
     }
 
     function listShows() {
@@ -254,6 +284,75 @@
         //    - PlayedIn
         // handle insert errors
         // look at handleUpdateMemberRequest() for general flow of handling errors
+
+
+        global $bandname;
+        global $db_conn, $success;
+
+        $venue = $_POST['venue'];
+        
+        $showDate = $_POST['showDate'];
+        $showTime = $_POST['showTime'];
+
+        
+
+        $managerName = trim($_POST['managerName']);
+        $managerDOB = $_POST['managerDOB'];
+
+        $song = $_POST['song'];
+       
+        //optional stuff
+        $showName = trim($_POST['showName']);
+
+        $eventName = $_POST['eventName'];
+        $eventDate = $_POST['eventDate'];
+
+        if (!$venue || !$showDate || !$showTime || !$managerName || !$managerDOB || !$song) {
+            echo "<p>Please fill out all of the required fields.</p>";
+        }
+        else if (!sanitizeInput($showName) || !sanitizeInput($managerName)) {
+            echo "<p>Special characters are not allowed / Input length limit reached!</p>";
+        }
+        else {
+            //make sure manager exists/ is a manager
+            //make sure manager is a manager
+            //make sure manager works for band
+            //make sure show doesn't already exist
+            //otherwise book show
+            //insert into  playedin
+            //insert into books
+
+            $showTimestamp = $showDate . " " . $showTime . ":00";
+            
+            $retrievedManager = executePlainSQL("SELECT memberName, memberDOB FROM Manager WHERE memberName = '" . $managerName . "' AND memberDOB = DATE '" . $managerDOB . "'");
+            $fetchedMember = oci_fetch_row($retrievedManager);
+
+            $retrievedWorksFor = executePlainSQL("SELECT memberName, memberDOB FROM WorksFor WHERE memberName = '" . $managerName . "' AND memberDOB = DATE '" . $managerDOB . "' AND bandname = '" . $bandname . "'");
+            $fetchedWorksFor = oci_fetch_row($retrievedWorksFor);
+
+            $retrievedShow = executePlainSQL("SELECT venueAddress, showDateTime FROM Show WHERE venueAddress = '" . $venue . "' AND showDateTime = TIMESTAMP '" . $showTimestamp . "'");
+            $fetchedShow = oci_fetch_row($retrievedShow);
+            
+            if (!$fetchedManager || !$fetchedWorksFor) {
+                echo "<p>Please enter the information of a real manager of <b>" . $bandname . "</b>.</p>";
+            } else if ($fetchedShow) {
+                echo "<p>A show at that time and place already exists!<p>";
+            } else {
+                //insert into show
+                executePlainSQL("INSERT INTO Show VALUES('" . $venue . "', TIMESTAMP '" . $showTimestamp . "', '" . $showName . "', '" . $bandname . "', '" . $eventName . "', DATE '" . $eventDate . "')");
+                oci_commit($db_conn);
+
+                //insert into playedin
+                executePlainSQL("INSERT INTO PlayedIn VALUES ('" . $song . "', '" . $bandname . "', '" . $venue . "', TIMESTAMP '" . $showTimestamp . "')");
+                oci_commit($db_conn);
+
+                //insert into books
+                executePlainSQL("INSERT INTO Books VALUES ('" . $managerName . "', DATE '" . $managerDOB . "', '" . $venue . "', TIMESTAMP '" . $showTimestamp . "')");
+                oci_commit($db_conn);
+                
+                echo "<p>Show created!</p>";
+            }
+        }        
     }
 
     function handleViewTicketsRequest() {
