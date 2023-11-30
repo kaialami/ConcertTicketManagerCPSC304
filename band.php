@@ -266,7 +266,8 @@
                 $date = $datetime[0];
                 $time = $datetime[1];
                 $time24 = $time;
-                if ((substr($time, 0, 2) == "12" && $datetime[2] == "AM") || $datetime[2] == "PM") {
+                if ((substr($time, 0, 2) == "12" && $datetime[2] == "AM") 
+                        || (substr($time, 0, 2) != "12" && $datetime[2] == "PM")) {
                     $time24 = to24($time);
                 } 
                 echo "<option value=\"" . $row['VENUEADDRESS'] . " " . $time24 . "\">" . $row['VENUEADDRESS'] . "@" . $time . " " . $datetime[2] . "</option>\n";
@@ -325,7 +326,7 @@
             $showTimestamp = $showDate . " " . $showTime . ":00";
             
             $retrievedManager = executePlainSQL("SELECT memberName, memberDOB FROM Manager WHERE memberName = '" . $managerName . "' AND memberDOB = DATE '" . $managerDOB . "'");
-            $fetchedMember = oci_fetch_row($retrievedManager);
+            $fetchedManager = oci_fetch_row($retrievedManager);
 
             $retrievedWorksFor = executePlainSQL("SELECT memberName, memberDOB FROM WorksFor WHERE memberName = '" . $managerName . "' AND memberDOB = DATE '" . $managerDOB . "' AND bandname = '" . $bandname . "'");
             $fetchedWorksFor = oci_fetch_row($retrievedWorksFor);
@@ -622,6 +623,7 @@
                 <label>
                     Event name and date<br>
                     <select name="eventName">
+                        <option value="">None</option>
                         <?php listEvents() ?>
                     </select>
                     <input type="date" name="eventDate">
