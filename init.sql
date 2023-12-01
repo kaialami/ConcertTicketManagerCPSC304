@@ -163,7 +163,7 @@ CREATE TABLE Books (
 	venueAddress		VARCHAR(50),
 	bookingDateTime		TIMESTAMP		NOT NULL,
 	UNIQUE(venueAddress, bookingDateTime),
-	PRIMARY KEY (memberName, memberDOB, venueAddress),
+	PRIMARY KEY (memberName, memberDOB, venueAddress, bookingDateTime),
 	FOREIGN KEY (memberName, memberDOB) REFERENCES Manager(memberName, memberDOB)
 		ON DELETE CASCADE,
 	FOREIGN KEY (venueAddress) REFERENCES Venue(venueAddress)

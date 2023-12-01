@@ -285,7 +285,7 @@
         //    - PlayedIn
         // handle insert errors
         // look at handleUpdateMemberRequest() for general flow of handling errors
-
+        
 
         global $bandname;
         global $db_conn, $success;
@@ -308,6 +308,18 @@
         $eventName = $_POST['eventName'];
         $eventDate = $_POST['eventDate'];
 
+        $eventvalid = true;
+        $eventnull = false;
+        if ($eventName == "None") {
+            $eventName = NULL;
+            $eventnull = true;
+        }
+
+        if (!$eventDate) {
+            $eventDate = "1900-11-30";
+            $eventnull = true;
+        }
+
         if (!$venue || !$showDate || !$showTime || !$managerName || !$managerDOB || !$song) {
             echo "<p>Please fill out all of the required fields.</p>";
         }
@@ -315,6 +327,7 @@
             echo "<p>Special characters are not allowed / Input length limit reached!</p>";
         }
         else {
+            //make sure event exists if not blank
             //make sure manager exists/ is a manager
             //make sure manager is a manager
             //make sure manager works for band
@@ -323,6 +336,17 @@
             //insert into  playedin
             //insert into books
 
+            if (!$eventnull) {
+                $retrievedEvent = executePlainSQL("SELECT eventName FROM EventTable WHERE eventName = '" . $eventName . "' AND eventDate = DATE '" . $eventDate . "'");
+                $fetchedEvent = oci_fetch_row($retrievedEvent);
+
+                if (!$fetchedEvent) {
+                    $eventvalid = false;
+                }
+            }
+
+            
+            
             $showTimestamp = $showDate . " " . $showTime . ":00";
             
             $retrievedManager = executePlainSQL("SELECT memberName, memberDOB FROM Manager WHERE memberName = '" . $managerName . "' AND memberDOB = DATE '" . $managerDOB . "'");
@@ -336,6 +360,8 @@
             
             if (!$fetchedManager || !$fetchedWorksFor) {
                 echo "<p>Please enter the information of a real manager of <b>" . $bandname . "</b>.</p>";
+            } else if (!$eventvalid) {
+                echo "<p>Please enter a valid event or leave the field blank.</p>";
             } else if ($fetchedShow) {
                 echo "<p>A show at that time and place already exists!<p>";
             } else {
