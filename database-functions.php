@@ -104,6 +104,55 @@
         return $hourInt . ":" . $split[1];
     }
 
+    // converts date DD-MON-YY to YYYY-MM-DD
+    // e.g. toYYYYMMDD(30-DEC-11) --> 2011-12-30
+    function toYYYYMMDD($date) {
+        $split = explode("-", $date);
+        $month = $split[1];
+        $mm = "";
+
+        switch($month) {
+            case "JAN":
+                $mm = "01";
+                break;
+            case "FEB":
+                $mm = "02";
+                break;
+            case "MAR":
+                $mm = "03";
+                break;
+            case "APR":
+                $mm = "04";
+                break;
+            case "MAY":
+                $mm = "05";
+                break;
+            case "JUN":
+                $mm = "06";
+                break;
+            case "JUL":
+                $mm = "07";
+                break;
+            case "AUG":
+                $mm = "08";
+                break;
+            case "SEP":
+                $mm = "09";
+                break;
+            case "OCT":
+                $mm = "10";
+                break;
+            case "NOV":
+                $mm = "11";
+                break;
+            case "DEC":
+                $mm = "12";
+                break;
+        }
+
+        return "20" . $split[2] . "-" . $mm . "-" . $split[0];
+    }
+
     function sanitizeInput($input) {
         if(preg_match("-([/!%$#*^&'\"()\[\]{}\-_=<>+~`]+)-", $input) || strchr($input, '\\') || strchr($input, '/')) {
             return false;
