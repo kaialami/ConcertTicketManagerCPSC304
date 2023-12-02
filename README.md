@@ -24,6 +24,7 @@ Key features of the Band mode include:
 - View, add and update band member information
 - View a band's songs, and add new songs to their discography
 - Book a new show with a listed venue
+- Add songs to a show's setlist
 - Generate tickets for a specific show at specified price
 
 ## ER Diagram
