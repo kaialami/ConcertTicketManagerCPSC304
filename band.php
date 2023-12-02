@@ -17,6 +17,15 @@
             visibility: visible;
         }
 
+
+        .form-container {
+            display: table;
+        }
+
+        .inline-form {
+            display: table-cell;
+        }
+
         
         
     </style>
@@ -201,10 +210,120 @@
 
     function handleViewSongsRequest() {
         // query for songs by band
+        global $bandname;
+    
+        echo "<table>\n";
+        echo "<tr>
+                <th>Song</th>
+                <th>Length</th>
+                <th>Genre</th>
+                <th>Producer</th>
+                <th>Release Date [dd-MMM-yy]</th>
+              </tr>\n";
+
+        $songs = executePlainSQL("SELECT songname, songlength, genre, producer, songdate FROM Song WHERE bandName = '" . $bandname . "'");
+        while ($row = OCI_Fetch_Array($songs, OCI_BOTH)) {
+            echo "<tr>
+                    <td>" . $row['SONGNAME'] . "</td>
+                    <td>" . $row['SONGLENGTH'] . "</td>
+                    <td>" . $row['GENRE'] . "</td>
+                    <td>" . $row['PRODUCER'] . "</td>
+                    <td>" . $row['SONGDATE'] . "</td>
+                </tr>\n";
+        }
+
+        echo "</table><br>\n";
+
+    }
+
+    function handleViewSongsByGenreRequest() {
+        global $bandname;
+    
+        echo "<table>\n";
+        echo "<tr>
+                <th>Genre</th>
+                <th>Count</th>
+              </tr>\n";    
+    
+        $songs = executePlainSQL("SELECT genre, count(*) FROM Song WHERE bandname = '" . $bandname . "' GROUP BY genre");
+        while ($row = OCI_Fetch_Array($songs, OCI_BOTH)) {
+            echo "<tr>
+                    <td>" . $row['GENRE'] . "</td>
+                    <td>" . $row['COUNT(*)'] . "</td>
+                </tr>\n";
+        }
+
+        echo "</table><br>\n";
+    }
+
+    function validSongLength($length) {
+        $split = explode(":", $length);
+        $count = count($split);
+
+        if ($count != 2 || strlen($split[1]) != 2) {
+            return false;
+        }
+
+        if (intval($split[1]) == 0) {
+            if ($split[1] != "00") {
+                return false;
+            }
+        }
+
+        if (intval($split[0]) == 0) {
+            if ($split[0] != "0") {
+                return false;
+            }
+        }
+
+        if (substr($split[0], 0, 1) == "0" && strlen($split[0]) != 1) {
+            return false;
+        }
+
+        return true;
     }
 
     function handleAddSongRequest() {
         // add new song tuple if possible
+        global $bandname;
+        global $db_conn;
+
+        $songname = $_POST['songName'];
+        $length = $_POST['length'];
+        $genre = $_POST['genre'];
+        $producer = $_POST['producer'];
+        $date = $_POST['releaseDate'];
+        if ($date) {
+            $date = "DATE '" . $date . "'";
+        } else {
+            $date = "NULL";
+        }
+
+        if (!$songname || !$length) {
+            echo "<p>Please fill out all of the required fields.</p>";
+        }
+        else if (!sanitizeInput($songname) || !sanitizeInput($length) || !sanitizeInput($genre) || !sanitizeInput($producer)) {
+            echo "<p>Special characters are not allowed / Input length limit reached!</p>";
+        }
+        else {
+            if (!validSongLength($length)) {
+                echo "<p>Enter a song length of the format X:XX, with no leading zeroes.</p>";
+                return;
+            }
+
+            $retrievedSong = executePlainSQL("SELECT songname FROM Song WHERE songname = '" . $songname . "' AND bandname = '" . $bandname . "'");
+            $fetchedSong = oci_fetch_row($retrievedSong);
+            
+            if ($fetchedSong) {
+                echo "<p>You already released a song under the name <i>" . $songname . "</i>!</p>";
+            } else {
+                executePlainSQL("INSERT INTO Song VALUES('" . $songname . "', '" . $bandname . "', '" . $length . "', '" . $genre . "', '" . $producer . "', " . $date . ")");
+                oci_commit($db_conn);
+                handleViewSongsRequest();
+            }
+            
+        }
+
     }
 
 
@@ -454,6 +573,9 @@
             if (array_key_exists("viewSongsRequest", $_POST)) {
                 handleViewSongsRequest();
             }
+            if (array_key_exists("viewSongsByGenreRequest", $_POST)) {
+                handleViewSongsByGenreRequest();
+            }
             if (array_key_exists("addSongRequest", $_POST)) {
                 handleAddSongRequest();
             }
@@ -590,10 +712,16 @@
             <a class="anchor" id="songs"></a>
             <h2>Manage Songs</h2>
             <p>View your band's songs.</p>
-            <form action="#songs" method="post">
-                <input type="hidden" name="viewSongsRequest">
-                <button type="submit">View</button>
-            </form>
+            <div class="form-container">
+                <form class="inline-form" action="#songs" method="post">
+                    <input type="hidden" name="viewSongsRequest">
+                    <button type="submit">View All Songs</button>
+                </form>
+                <form class="inline-form" action="#songs" method="post">
+                    <input type="hidden" name="viewSongsByGenreRequest">
+                    <button type="submit">View By Genre</button>
+                </form>   
+            </div>        
             <br>
             <p>Add a new song to your discography.</p>
             <form action="#songs" method="post">
@@ -602,14 +730,14 @@
                 <p>Optional information:</p>
                 <input type="text" name="genre" placeholder="Genre">
                 <input type="text" name="producer" placeholder="Producer Name"><br>
-                <label>Date Created<br><input type="date" name="date"></label>
+                <label>Release Date<br><input type="date" name="releaseDate"></label>
                 <input type="hidden" name="addSongRequest">
                 <button type="submit">Add Song</button>
             </form>
             <br>
 
             <?php
-                if (isset($_POST['viewSongsRequest']) || isset($_POST['addSongRequest'])) {
+                if (isset($_POST['viewSongsRequest']) || isset($_POST['viewSongsByGenreRequest']) || isset($_POST['addSongRequest'])) {
                     handlePOSTRequest();
                 } else {
                     echo $linebreaks;
