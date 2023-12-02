@@ -119,7 +119,7 @@ CREATE TABLE ConcertGoer (
 
 CREATE TABLE TicketID (
 	ticketID		INTEGER			PRIMARY KEY,
-	seatNum			VARCHAR(30)		NOT NULL,
+	seatNum			CHAR(5)			NOT NULL,
 	userID			VARCHAR(30),
 	venueAddress	VARCHAR(50)		NOT NULL,
 	showDateTime		TIMESTAMP		NOT NULL,
