@@ -473,3 +473,5 @@ INSERT INTO PlayedIn
 VALUES ('Super Epic Song', 'Super Cool Indie Band', '5054 Rat Ave, New York City, NY, USA', TIMESTAMP '2011-12-30 18:30:00');
 INSERT INTO PlayedIn 
 VALUES ('Glimpse of Us', 'Joji', '44 44th St, Toronto, ON, Canada', TIMESTAMP '2018-03-31 19:30:00');
+INSERT INTO PlayedIn 
+VALUES ('505', 'Arctic Monkeys', '231 Oak Rd, Vancouver, BC, Canada', TIMESTAMP '2011-12-30 18:00:00');
