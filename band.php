@@ -619,6 +619,97 @@
         // concertgoer.php has example on how to query using TIMESTAMP in handleSearchTicketsRequest()
         // also remember to add to all 3 Ticket tables
         //
+
+        global $db_conn;
+
+        $price = $_POST['price'];
+        $number = $_POST['number'];
+        $type = $_POST['type'];
+
+        $showVenueDateTime = $_POST['showVenueDateTime'];
+        if(!$showVenueDateTime || !$price || !$number) {
+            echo "<p>Please fill out all of the required fields.</p>";
+        } else if ($number < 0) {
+            echo "<p>Price cannot be less than $0.</p>";
+        }
+        else {
+            //https://stackoverflow.com/questions/885241/php-string-indexing
+            $letter = $type[0];
+
+            // https://www.php.net/manual/en/function.explode.php
+            $explodedShowVenueDateTime = explode("@", $showVenueDateTime);
+            $venue = $explodedShowVenueDateTime[0];
+
+            $retrievedCapacity = executePlainSQL("SELECT capacity FROM Venue WHERE venueAddress = '" . $venue . "'");
+            $capacity = intval(oci_fetch_row($retrievedCapacity)[0]);
+            
+            $showDate = $explodedShowVenueDateTime[1];
+            $showTime = $explodedShowVenueDateTime[2];
+
+            $showTimestamp = $showDate . " " . $showTime . ":00";
+            //echo "<p>" . $showVenueDateTime . $showTime . $showTimestamp . "</p>";
+            
+
+            $nextSeatNum = 1;
+            
+            // https://www.w3schools.com/php/php_looping_for.asp
+            for ($i = 0; $i < $number; $i++) {
+                $retrievedTicketID = executePlainSQL("SELECT count(ticketID) FROM TicketID");
+                
+                $ticketID = oci_fetch_row($retrievedTicketID);
+                // https://www.php.net/manual/en/function.intval.php
+                $newTicketID = intval($ticketID[0]) + 1;
+                
+                $seatNum = $letter . $nextSeatNum;
+                //echo "<p> ". $newTicketID . $seatNum . $capacity . $type ."</p>";
+                $retrievedTaken = executePlainSQL("SELECT * FROM TicketID WHERE seatNum = '" . $seatNum . "' AND venueAddress = '" . $venue . "' AND showDateTime = TIMESTAMP '" . $showTimestamp . "'");
+                $taken = oci_fetch_row($retrievedTaken);
+
+                if ($nextSeatNum > $capacity) {
+                    echo "<p>Ran out of space while issuing tickets</p>";
+                    break;
+                }
+                
+                while($taken) {
+                    
+                    if ($nextSeatNum > $capacity) {
+                        //https://www.php.net/manual/en/control-structures.break.php
+                        echo "<p>Ran out of space while issuing tickets</p>";
+                        break 2;
+                    }
+                    
+                    $nextSeatNum++;
+                    $seatNum = $letter . $nextSeatNum;
+
+                    $retrievedTaken = executePlainSQL("SELECT * FROM TicketID WHERE seatNum = '" . $seatNum . "' AND venueAddress = '" . $venue . "' AND showDateTime = TIMESTAMP '" . $showTimestamp . "'");
+                    $taken = oci_fetch_row($retrievedTaken);
+                }
+                $retrievedTicketType = executePlainSQL("SELECT * FROM TicketType WHERE seatNum = '" . $seatNum . "'");
+                $fetchedTicketType = oci_fetch_row($retrievedTicketType);
+                if (!$fetchedTicketType) {
+                    //echo "<p> test </p>";
+                    //insert into TicketType
+                    executePlainSQL("INSERT INTO TicketType VALUES ('" . $seatNum . "', '" . $type . "')");
+                    //echo "<p> test2 </p>";
+                    oci_commit($db_conn);
+                    //echo "<p> test3 </p>";
+                }
+                
+                
+                //Insert into TicketPrice
+                executePlainSQL("INSERT INTO TicketPrice VALUES ('" . $seatNum . "', '" . $venue . "', TIMESTAMP '" . $showTimestamp . "', " . $price . ")");
+                oci_commit($db_conn);
+
+                //Insert into TicketID
+                executePlainSQL("INSERT INTO TicketID VALUES ('" . $newTicketID . "', '" . $seatNum . "', NULL, '" . $venue . "', TIMESTAMP '" . $showTimestamp . "')");
+                oci_commit($db_conn);
+                
+            }
+            echo "<p>Tickets created!</p>";
+        }
+        
+
+        
     }
 
     function handlePOSTRequest() {
