@@ -204,11 +204,14 @@ function handleSearchTicketsRequest()
             $result = executePlainSQL("SELECT i.ticketid, i.seatnum, i.venueaddress, i.showdatetime, p.price FROM TicketID i, TicketPrice p WHERE 
                        regexp_like(i.venueaddress, '^" . $venue . "$', 'i') AND i.showDateTime = 
                        TIMESTAMP '" . $date . " " . $time . ":00' AND i.userID is NULL AND 
-                       i.seatnum = p.seatnum AND i.venueaddress = p.venueaddress AND i.showdatetime = p.showdatetime");
+                       i.seatnum = p.seatnum ORDER BY p.price");
             $count = executePlainSQL("SELECT Count(*) FROM TicketID i, TicketPrice p WHERE 
                        regexp_like(i.venueaddress, '^" . $venue . "$', 'i') AND i.showDateTime = 
                        TIMESTAMP '" . $date . " " . $time . ":00' AND i.userID is NULL AND 
                        i.seatnum = p.seatnum AND i.venueaddress = p.venueaddress AND i.showdatetime = p.showdatetime");
+
+            // $result = executePlainSQL("SELECT ticketid, seatnum, venueaddress, showdatetime FROM TicketID WHERE regexp_like(venueaddress, '^" . $venue . "$', 'i') AND 
+            //         showDateTime = TIMESTAMP '" . $date . " " . $time . ":00' AND userID is NULL");
             if ($rowCount = oci_fetch_row($count)) {
                 if ($rowCount[0] == "0") {
                     echo "<p>No tickets found. Check your query (or maybe no tickets are available).</p><br> <br> <br>";
