@@ -382,14 +382,19 @@
             $shows = executePlainSQL("SELECT venueAddress, showDateTime FROM Show WHERE bandname = '" . $bandname . "'");
             while ($row = OCI_Fetch_Array($shows, OCI_BOTH)) {
                 $datetime = formatDateTime($row['SHOWDATETIME']);
+                
                 $date = $datetime[0];
+                //https://www.php.net/manual/en/function.date-create.php
+                //https://www.php.net/manual/en/datetime.format.php
+                $datetest = date_create($datetime[0]);
+                $dateteststring = date_format($datetest, "Y-m-d");
                 $time = $datetime[1];
                 $time24 = $time;
                 if ((substr($time, 0, 2) == "12" && $datetime[2] == "AM") 
                         || (substr($time, 0, 2) != "12" && $datetime[2] == "PM")) {
                     $time24 = to24($time);
                 } 
-                echo "<option value=\"" . $row['VENUEADDRESS'] . " " . $time24 . "\">" . $row['VENUEADDRESS'] . "@" . $time . " " . $datetime[2] . "</option>\n";
+                echo "<option value=\"" . $row['VENUEADDRESS'] . "@" . $dateteststring . "@" . $time24  . "\">" . $row['VENUEADDRESS'] . "@" . $dateteststring . "@" . $time . " " . $datetime[2] .  "</option>\n";
             }
         }
 
@@ -501,6 +506,67 @@
         }        
     }
 
+    function handleViewSetlistRequest() {
+        global $bandname;
+        $show = $_POST['showVenueDateTime'];
+        $split = explode("@", $show);
+        $venue = $split[0];
+        $date = $split[1];
+        $time = $split[2];
+        
+        echo "<p>Setlist for <b>" . $venue . "@" . $date . " " . $time . "</b>:</p>";
+
+        echo "<table>\n";
+        echo "<tr>
+                <th>Song</th>
+                <th>Length</th>
+                <th>Genre</th>
+                <th>Producer</th>
+                <th>Release Date [dd-MMM-yy]</th>
+              </tr>\n";
+        
+
+        $songs = executePlainSQL("SELECT s.songname, songlength, genre, producer, songdate FROM Song s, PlayedIn p
+                    WHERE venueaddress = '" . $venue . "' AND showdatetime = TIMESTAMP '" . $date . " " . $time . ":00' AND s.songname = p.songname AND s.bandname = p.bandname AND s.bandName = '" . $bandname . "'");
+        while ($row = OCI_Fetch_Array($songs, OCI_BOTH)) {
+            echo "<tr>
+                    <td>" . $row['SONGNAME'] . "</td>
+                    <td>" . $row['SONGLENGTH'] . "</td>
+                    <td>" . $row['GENRE'] . "</td>
+                    <td>" . $row['PRODUCER'] . "</td>
+                    <td>" . $row['SONGDATE'] . "</td>
+                </tr>\n";
+        }
+
+        echo "</table><br>\n";
+    }
+
+    function handleAddToSetlistRequest() {
+        global $bandname, $db_conn;
+
+        $show = $_POST['showVenueDateTime'];
+        $split = explode("@", $show);
+        $venue = $split[0];
+        $date = $split[1];
+        $time = $split[2];        
+        
+        $song = $_POST['song'];
+
+        $checkSetlist = executePlainSQL("SELECT songname from PlayedIn WHERE songname = '" . $song . "' AND bandname = '" . $bandname . "' 
+                        AND venueaddress = '" . $venue . "' AND showdatetime = TIMESTAMP '" . $date . " " . $time . ":00'");
+        $row = oci_fetch_row($checkSetlist);
+        if ($row) {
+            echo "<p><i>" . $song . "</i> is already part of the show's setlist!</p>";
+        } else {
+            echo "<p><i>" . $song . "</i> added to the show's setlist!</p>";
+            executePlainSQL("INSERT INTO PlayedIn VALUES('" . $song . "', '" . $bandname . "', '" . $venue . "', TIMESTAMP '" . $date . " " . $time . ":00')");
+            oci_commit($db_conn);
+        }
+        
+        handleViewSetlistRequest();
+
+    }
+
     function handleViewTicketsRequest() {
         global $bandname, $db_conn, $success;
 
@@ -582,6 +648,12 @@
             if (array_key_exists("bookShowRequest", $_POST)) {
                 handleBookShowRequest();
             }
+            if (array_key_exists("viewSetlistRequest", $_POST)) {
+                handleViewSetlistRequest();
+            } 
+            if (array_key_exists("addToSetlistRequest", $_POST)) {
+                handleAddToSetlistRequest();
+            }
             if (array_key_exists("viewTicketsRequest", $_POST)) {
                 handleViewTicketsRequest();
             }
@@ -603,6 +675,7 @@
         <a href="#record-label">Record Label</a>
         <a href="#songs">Songs</a>
         <a href="#book-show">Book Show</a>
+        <a href="#setlist">Setlists</a>
         <a href="#tickets">Tickets</a>
     </div>
 
@@ -759,7 +832,7 @@
                 <select name="venue">
                     <?php listVenues() ?>
                 </select>
-                <input type="date" name="showDate">
+                <input type="date" name="showDate" min="2000-01-01">
                 <input type="time" name="showTime">
                 <br>
                 <p>Manager Information:</p>
@@ -790,6 +863,42 @@
 
             <?php
                 if (isset($_POST['bookShowRequest'])) {
+                    handlePOSTRequest();
+                } else {
+                    echo $linebreaks;
+                }
+            ?>
+
+            <br>
+        </div>
+        <hr>
+        <div class="section">
+            <a class="anchor" id="setlist"></a>
+            <h2>Setlists</h2>
+            <p>View the setlist for one of your shows.</p>
+            <form action="#setlist" method="post">
+                <select name="showVenueDateTime">
+                    <?php listShows() ?>
+                </select>
+                <input type="hidden" name="viewSetlistRequest">
+                <button type="submit">View Setlist</button>
+            </form>
+            <br>
+            <p>Add a song to a show's setlist.</p>
+            <form action="#setlist" method="post">
+                <select name="showVenueDateTime">
+                    <?php listShows() ?>
+                </select>
+                <br>
+                <select name="song">
+                    <?php listSongs() ?>
+                </select>    
+                <input type="hidden" name="addToSetlistRequest">
+                <button type="submit">Add to Setlist</button>
+            </form>
+
+            <?php
+                if (isset($_POST['viewSetlistRequest']) || isset($_POST['addToSetlistRequest'])) {
                     handlePOSTRequest();
                 } else {
                     echo $linebreaks;
