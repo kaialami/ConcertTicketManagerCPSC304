@@ -689,7 +689,7 @@
                 if (!$fetchedTicketType) {
                     //echo "<p> test </p>";
                     //insert into TicketType
-                    executePlainSQL("INSERT INTO TicketType VALUES ('" . $seatNum . "', '" . $type . "')");
+                    executePlainSQL("INSERT INTO TicketType VALUES ('" . trim($seatNum) . "', '" . $type . "')");
                     //echo "<p> test2 </p>";
                     oci_commit($db_conn);
                     //echo "<p> test3 </p>";
@@ -697,11 +697,11 @@
                 
                 
                 //Insert into TicketPrice
-                executePlainSQL("INSERT INTO TicketPrice VALUES ('" . $seatNum . "', '" . $venue . "', TIMESTAMP '" . $showTimestamp . "', " . $price . ")");
+                executePlainSQL("INSERT INTO TicketPrice VALUES ('" . trim($seatNum) . "', '" . $venue . "', TIMESTAMP '" . $showTimestamp . "', " . $price . ")");
                 oci_commit($db_conn);
 
                 //Insert into TicketID
-                executePlainSQL("INSERT INTO TicketID VALUES ('" . $newTicketID . "', '" . $seatNum . "', NULL, '" . $venue . "', TIMESTAMP '" . $showTimestamp . "')");
+                executePlainSQL("INSERT INTO TicketID VALUES ('" . $newTicketID . "', '" . trim($seatNum) . "', NULL, '" . $venue . "', TIMESTAMP '" . $showTimestamp . "')");
                 oci_commit($db_conn);
                 
             }
