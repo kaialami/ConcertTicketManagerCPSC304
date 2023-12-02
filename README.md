@@ -26,3 +26,5 @@ Key features of the Band mode include:
 - Book a new show with a listed venue
 - Generate tickets for a specific show at specified price
 
+## ER Diagram
+![image](https://media.github.students.cs.ubc.ca/user/18230/files/587b4845-16ba-40c5-a705-5d5c0162face)
