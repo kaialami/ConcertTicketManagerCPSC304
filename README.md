@@ -7,7 +7,7 @@ Our project aims to be a way for people interested in seeing bands perform to fi
 
 Our application has two modes that users can sign in as: ConcertGoer or Band. ConcertGoers are customers interested in buying tickets for shows and Bands are performers interested in listing shows and tickets for purchase.  
 
-[Link to the application](https://www.students.cs.ubc.ca/~kaialami/project/landingpage.php)
+<a href="https://www.students.cs.ubc.ca/~kaialami/project/landingpage.php" target="_blank">Open the app in a new tab</a>
 
 ## ConcertGoer
 The ConcertGoer mode contains features that allow a customer to manage their tickets and help them make decisions on buying tickets.  
